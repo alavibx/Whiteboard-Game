@@ -1,4 +1,4 @@
-# Whiteboard-Game
+# Bernstdh-board
 
 The whiteboard in ISAT 236 hants Dr. Bernsteins dreams. Help him wipe his conscience clean!
 
