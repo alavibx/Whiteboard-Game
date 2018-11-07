@@ -8,6 +8,7 @@ import javax.swing.SwingUtilities;
 
 import app.JApplication;
 import io.ResourceFinder;
+import visual.ScaledVisualizationRenderer;
 import visual.Visualization;
 import visual.VisualizationView;
 import visual.dynamic.sampled.Screen;
@@ -63,8 +64,13 @@ public class BernstdhBoard extends JApplication
     JPanel contentPane = (JPanel) this.getContentPane();
     ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
     Visualization visual = new Visualization();
+    
+    Screen screen_left = new Screen(20);
+    VisualizationView view_left = screen_left.getView();
     VisualizationView view = visual.getView();
-    view.setBounds(0, 0, width, height);
+    
+    
+    screen_left.setRepeating(true);
     
     ContentFactory factory = new ContentFactory(finder);
     Content bkgd = factory.createContent("maingame_background.png", 4);
@@ -78,6 +84,15 @@ public class BernstdhBoard extends JApplication
     bernstein_right = factory.createContents(filesright, 4);
     bernstein_erase = factory.createContents(fileserase, 4);
     
+    view.setBounds(0, 0, width, height);
+    
+    /*view_left.setBounds(0, 0, 400, 400);
+
+    for (int i = 0; i < bernstein_left.length; i++)
+    {
+      screen_left.add(bernstein_left[i]);
+    }*/
+    
     bkgd.setScale(1, 1);
     bernstein.setScale(1, 1);
     bernstein.setLocation(300, 115);
@@ -87,6 +102,9 @@ public class BernstdhBoard extends JApplication
     visual.add(bernstein);
     visual.add(frgd);
     contentPane.add(view);
+    //contentPane.add(view_left);
+    
+    screen_left.start();
   }
 
 }
