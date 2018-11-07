@@ -1,0 +1,4 @@
+bernstein_walkingleft-sp1.png
+bernstein_walkingleft-sp2.png
+bernstein_walkingleft-sp3.png
+bernstein_walkingleft-sp4.png
