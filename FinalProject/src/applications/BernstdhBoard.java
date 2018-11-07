@@ -29,7 +29,7 @@ public class BernstdhBoard extends JApplication
   private SimpleContent[] bernstein_left;
   private SimpleContent[] bernstein_right;
   private SimpleContent[] bernstein_erase;
-  
+
   /**
    * Contructs a new BernstdhBoard of the size width x height.
    * 
@@ -65,38 +65,37 @@ public class BernstdhBoard extends JApplication
   {
     JPanel contentPane = (JPanel) this.getContentPane();
     ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
-    
-    //the stage
-    Stage stage = new Stage(50);
-	stage.setBackground(Color.BLUE);
-	VisualizationView stageView = stage.getView();
+
+    // the stage
+    Stage stage = new Stage(75);
+    stage.setBackground(Color.BLUE);
+    VisualizationView stageView = stage.getView();
     stageView.setBounds(0, 0, width, height);
-	
-	ContentFactory factory = new ContentFactory(finder);
- 
-	// Add the words to the board
-    //Content word = factory.createContent("word.png", 4);
-    //word.setLocation(0, 480 - 144);
-    //stage.add(word);
-    
-    //add the back ground
+
+    ContentFactory factory = new ContentFactory(finder);
+
+    // Add the words to the board
+    // Content word = factory.createContent("word.png", 4);
+    // word.setLocation(0, 480 - 144);
+    // stage.add(word);
+
+    // add the back ground
     Content bkgd = factory.createContent("maingame_background.png", 4);
     bkgd.setScale(1, 1);
     stage.add(bkgd);
-    
-    //add the foreground
-    Content frgd = factory.createContent("maingame_foreground.png", 4);
-    frgd.setScale(1, 1);
-    stage.add(frgd);
-    
-	// Add the player's character (i.e., Bernstein)
+
+    // Add the player's character (i.e., Bernstein)
     BernsteinSprite bernstdh = new BernsteinSprite();
     stage.add(bernstdh);
     stage.addKeyListener(bernstdh);
-   
-     
-    stageView.setBounds(0, 0, width, height);    
-    contentPane.add(stageView);  
+
+    // add the foreground
+    Content frgd = factory.createContent("maingame_foreground.png", 4);
+    frgd.setScale(1, 1);
+    stage.add(frgd);
+
+    stageView.setBounds(0, 0, width, height);
+    contentPane.add(stageView);
     stage.start();
   }
 

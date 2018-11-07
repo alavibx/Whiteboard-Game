@@ -1,4 +1,5 @@
 package applications;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
@@ -19,29 +20,24 @@ import visual.dynamic.described.*;
  */
 public class BernsteinSprite extends AbstractSprite implements KeyListener
 {
-  private boolean nearStreetlight, tongueOnPole, tongueOut;
-  private int lastTickTime, tongueRetractionTime, xBernstein, yBernstein;
+  private boolean nearLeftEdge, nearRightEdge;
+  private int lastTickTime, xBernstein, yBernstein;
   private int direction, position;
   private Content[][] images;
 
- 
+  private static final int RIGHT = 0;
+  private static final int LEFT = 1;
 
-  private static final int LEFT = 0;
-  private static final int RIGHT = 1;
+  private static final int RIGHT_FORWARD = 0;
+  private static final int LEFT_FORWARD = 1;
+  private static final int DEFAULT = 2;
+  
+  //private static final int BACK = 0;
 
-  private static final int LEFT_FORWARD = 0;
-  private static final int RIGHT_FORWARD = 1;
-  private static final int UPRIGHT = 2;
-
-  private static final int[] SEQUENCE = {UPRIGHT, RIGHT_FORWARD, UPRIGHT, LEFT_FORWARD};
+  private static final int[] SEQUENCE = {DEFAULT, RIGHT_FORWARD, DEFAULT, LEFT_FORWARD};
 
   /**
    * Explicit Value Constructor
-   *
-   * @param tree
-   *          The tree that he might bump into
-   * @param streetlight
-   *          The streetlight that he might bump into
    */
   public BernsteinSprite()
   {
@@ -49,11 +45,10 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
 
     xBernstein = 300;
     yBernstein = 115;
-    
 
     ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
     ContentFactory factory = new ContentFactory(finder);
-    images = factory.createContents("mick.png", 3, 4, 4);
+    images = factory.createContents("bernstein_sprites.png", 3, 5, 4);
     direction = RIGHT;
     position = 0;
 
@@ -64,7 +59,8 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   /**
    * Invoked when a key is pressed (required by KeyListener).
    *
-   * @param ke          The GameButtonEvent
+   * @param ke
+   *          The GameButtonEvent
    */
   public void keyPressed(KeyEvent ke)
   {
@@ -83,7 +79,8 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   /**
    * Invoked when a key is released (required by KeyListener).
    *
-   * @param ke          The GameButtonEvent
+   * @param ke
+   *          The GameButtonEvent
    */
   public void keyReleased(KeyEvent ke)
   {
@@ -92,7 +89,8 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   /**
    * Invoked when a key is pressed and released (required by KeyListener).
    *
-   * @param ke          The GameButtonEvent
+   * @param ke
+   *          The GameButtonEvent
    */
   public void keyTyped(KeyEvent ke)
   {
@@ -121,8 +119,8 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
    */
   public void handleFire()
   {
-    tongueOut = true;
-    //tongueRetractionTime = lastTickTime + TONGUE_TIME;
+    //tongueOut = true;
+    // tongueRetractionTime = lastTickTime + TONGUE_TIME;
   }
 
   /**
@@ -130,8 +128,8 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
    */
   public void handleLeft()
   {
-    if (xBernstein > 40)
-      xBernstein -= 10;
+    if (!nearLeftEdge)
+      xBernstein -= 15;
 
     // Handle normal movement
     if (direction == LEFT)
@@ -141,7 +139,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
     else // Facing RIGHT
     {
       direction = LEFT;
-      position = UPRIGHT;
+      position = DEFAULT;
     }
 
   }
@@ -151,8 +149,10 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
    */
   public void handleRight()
   {
-    if (!nearStreetlight)
-      xBernstein += 10;
+    if (!nearRightEdge)
+    {
+      xBernstein += 15;
+    }
 
     if (direction == RIGHT)
     {
@@ -161,7 +161,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
     else // Facing LEFT
     {
       direction = RIGHT;
-      position = UPRIGHT;
+      position = DEFAULT;
     }
 
   }
@@ -177,26 +177,22 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   /**
    * Render this SpriteView.
    *
-   * @param g          The rendering engine to use
+   * @param g
+   *          The rendering engine to use
    */
   public void render(Graphics g)
   {
     int tx, ty;
 
-    /**if (tongueOnPole)
-    {
-      tongues[RIGHT].render(g);
-    }
-    else if (tongueOut)
-    {
-      tx = xMick + TONGUE_X[direction];
-      ty = yMick + TONGUE_Y[SEQUENCE[position]];
-
-      tongues[direction].setLocation(tx, ty);
-      tongues[direction].render(g);
-
-     
-    }**/
+    /**
+     * if (tongueOnPole) { tongues[RIGHT].render(g); } else if (tongueOut) { tx = xMick +
+     * TONGUE_X[direction]; ty = yMick + TONGUE_Y[SEQUENCE[position]];
+     * 
+     * tongues[direction].setLocation(tx, ty); tongues[direction].render(g);
+     * 
+     * 
+     * }
+     **/
 
     super.render(g);
 
@@ -205,19 +201,22 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   /**
    * Handle a tick event.
    *
-   * @param time          The current time (in milliseconds)
+   * @param time
+   *          The current time (in milliseconds)
    */
   public void handleTick(int time)
   {
     lastTickTime = time;
 
-    if (xBernstein > 580)
-      nearStreetlight = true;
+    if (xBernstein > 1045)
+      nearRightEdge = true;
     else
-      nearStreetlight = false;
-
-  
-
+      nearRightEdge = false;
+    
+    if (xBernstein > 0)
+      nearLeftEdge = false;
+    else
+      nearLeftEdge = true;
 
     setLocation(xBernstein, yBernstein);
   }
