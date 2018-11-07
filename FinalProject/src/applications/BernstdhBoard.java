@@ -1,5 +1,6 @@
 package applications;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 
@@ -11,6 +12,7 @@ import io.ResourceFinder;
 import visual.ScaledVisualizationRenderer;
 import visual.Visualization;
 import visual.VisualizationView;
+import visual.dynamic.described.Stage;
 import visual.dynamic.sampled.Screen;
 import visual.statik.SimpleContent;
 import visual.statik.sampled.Content;
@@ -63,48 +65,39 @@ public class BernstdhBoard extends JApplication
   {
     JPanel contentPane = (JPanel) this.getContentPane();
     ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
-    Visualization visual = new Visualization();
     
-    Screen screen_left = new Screen(20);
-    VisualizationView view_left = screen_left.getView();
-    VisualizationView view = visual.getView();
+    //the stage
+    Stage stage = new Stage(50);
+	stage.setBackground(Color.BLUE);
+	VisualizationView stageView = stage.getView();
+    stageView.setBounds(0, 0, width, height);
+	
+	ContentFactory factory = new ContentFactory(finder);
+ 
+	// Add the words to the board
+    //Content word = factory.createContent("word.png", 4);
+    //word.setLocation(0, 480 - 144);
+    //stage.add(word);
     
-    
-    screen_left.setRepeating(true);
-    
-    ContentFactory factory = new ContentFactory(finder);
+    //add the back ground
     Content bkgd = factory.createContent("maingame_background.png", 4);
-    Content bernstein = factory.createContent("bernstein_default.png", 4);
-    Content frgd = factory.createContent("maingame_foreground.png", 4);
-    
-    String[] filesleft = finder.loadResourceNames("bernstein_walkingleft.txt");
-    String[] filesright = finder.loadResourceNames("bernstein_walkingright.txt");
-    String[] fileserase = finder.loadResourceNames("bernstein_erasing.txt");
-    bernstein_left = factory.createContents(filesleft, 4);
-    bernstein_right = factory.createContents(filesright, 4);
-    bernstein_erase = factory.createContents(fileserase, 4);
-    
-    view.setBounds(0, 0, width, height);
-    
-    /*view_left.setBounds(0, 0, 400, 400);
-
-    for (int i = 0; i < bernstein_left.length; i++)
-    {
-      screen_left.add(bernstein_left[i]);
-    }*/
-    
     bkgd.setScale(1, 1);
-    bernstein.setScale(1, 1);
-    bernstein.setLocation(300, 115);
+    stage.add(bkgd);
+    
+    //add the foreground
+    Content frgd = factory.createContent("maingame_foreground.png", 4);
     frgd.setScale(1, 1);
+    stage.add(frgd);
     
-    visual.add(bkgd);
-    visual.add(bernstein);
-    visual.add(frgd);
-    contentPane.add(view);
-    //contentPane.add(view_left);
-    
-    screen_left.start();
+	// Add the player's character (i.e., Bernstein)
+    BernsteinSprite bernstdh = new BernsteinSprite();
+    stage.add(bernstdh);
+    stage.addKeyListener(bernstdh);
+   
+     
+    stageView.setBounds(0, 0, width, height);    
+    contentPane.add(stageView);  
+    stage.start();
   }
 
 }
