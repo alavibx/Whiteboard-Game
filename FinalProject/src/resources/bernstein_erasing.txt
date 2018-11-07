@@ -1,0 +1,5 @@
+bernstein_erasing-sp1.png
+bernstein_erasing-sp2.png
+bernstein_erasing-sp3.png
+bernstein_erasing-sp4.png
+bernstein_erasing-sp5.png
