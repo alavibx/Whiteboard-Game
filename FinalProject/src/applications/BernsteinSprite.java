@@ -9,7 +9,7 @@ import visual.statik.sampled.*;
 import visual.dynamic.described.*;
 
 /**
- * The main character in the game Flakey.
+ * The main character in the game Bernstdh-board.
  *
  * Mick is a Sprite that responds to user interaction. It is an example of a Sprite that uses
  * multiple pieces of visual content that vary depending on the state (e.g., walking left, walking
@@ -25,16 +25,27 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   private int direction, position;
   private Content[][] images;
 
+  // directions
   private static final int RIGHT = 0;
   private static final int LEFT = 1;
+  private static final int BACK = 2;
 
-  private static final int RIGHT_FORWARD = 0;
-  private static final int LEFT_FORWARD = 1;
-  private static final int DEFAULT = 2;
+  // positions
+  private static final int DIR1 = 0;
+  private static final int DIR2 = 1;
+  private static final int DIR3 = 2;
+  private static final int DIR4 = 3;
   
-  //private static final int BACK = 0;
+  private static final int ERASE1 = 0;
+  private static final int ERASE2 = 1;
+  private static final int ERASE3 = 2;
+  private static final int ERASE4 = 3;
+  private static final int ERASE5 = 4;
+  
+  private static final int UPRIGHT = 4;
 
-  private static final int[] SEQUENCE = {DEFAULT, RIGHT_FORWARD, DEFAULT, LEFT_FORWARD};
+  private static final int[] SEQUENCE = {DIR1, DIR2, DIR3, DIR4, UPRIGHT};
+  private static final int[] SEQUENCE_ERASE = {ERASE1, ERASE2, ERASE3, ERASE4, ERASE5};
 
   /**
    * Explicit Value Constructor
@@ -50,7 +61,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
     ContentFactory factory = new ContentFactory(finder);
     images = factory.createContents("bernstein_sprites.png", 3, 5, 4);
     direction = RIGHT;
-    position = 0;
+    position = 4;
 
     setLocation(xBernstein, yBernstein);
     setVisible(true);
@@ -84,6 +95,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
    */
   public void keyReleased(KeyEvent ke)
   {
+    position = UPRIGHT;
   }
 
   /**
@@ -119,8 +131,9 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
    */
   public void handleFire()
   {
-    //tongueOut = true;
-    // tongueRetractionTime = lastTickTime + TONGUE_TIME;
+    direction = BACK;
+    position = ERASE1;
+    position = ERASE3;
   }
 
   /**
@@ -139,7 +152,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
     else // Facing RIGHT
     {
       direction = LEFT;
-      position = DEFAULT;
+      position = DIR1;
     }
 
   }
@@ -161,7 +174,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
     else // Facing LEFT
     {
       direction = RIGHT;
-      position = DEFAULT;
+      position = DIR1;
     }
 
   }
@@ -171,7 +184,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
    */
   private void increasePosition()
   {
-    position = (position + 1) % SEQUENCE.length;
+    position = (position + 1) % (SEQUENCE.length - 1);
   }
 
   /**
@@ -212,7 +225,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
       nearRightEdge = true;
     else
       nearRightEdge = false;
-    
+
     if (xBernstein > 0)
       nearLeftEdge = false;
     else
