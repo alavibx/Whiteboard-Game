@@ -1,0 +1,9 @@
+/**
+ * 
+ */
+/**
+ * @author alavibx
+ *
+ */
+module WhiteBoardGame {
+}
