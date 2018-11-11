@@ -25,6 +25,7 @@ public class BernstdhBoard extends JApplication implements KeyListener
 {
   private Content[] boardContents;
   private JPanel contentPane;
+  private Content bb;
   private boolean isPaused, gameStarted;
 
   Stage stage;
@@ -66,13 +67,6 @@ public class BernstdhBoard extends JApplication implements KeyListener
     ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
     ContentFactory factory = new ContentFactory(finder);
 
-    // Create and add the stage
-    stage = new Stage(75);
-    stage.setBackground(Color.WHITE);
-    VisualizationView stageView = stage.getView();
-    stageView.setBounds(0, 0, width, height);
-    contentPane.add(stageView);
-
     // Add the words to the board
     // Content word = factory.createContent("word.png", 4);
     // word.setLocation(0, 480 - 144);
@@ -82,26 +76,27 @@ public class BernstdhBoard extends JApplication implements KeyListener
     String[] files = finder.loadResourceNames("content.txt");
     boardContents = factory.createContents(files, 4);
 
-    // Add the background
+    // Create and add the stage
+    stage = new Stage(75);
+    stage.setBackground(Color.WHITE);
+    VisualizationView stageView = stage.getView();
+    stageView.setBounds(0, 0, width, height);
+    contentPane.add(stageView);
+    
     Content bkgd = factory.createContent("background.png", 4);
-    bkgd.setScale(1, 1);
+    bkgd.setScale(1.0, 1.0);
+    bkgd.setLocation(0, 0);
     stage.add(bkgd);
 
     // Add the mainscreen display
-    Content bb = factory.createContent("bernstdh-mainscreen.png", 4);
+     bb = factory.createContent("bernstdh-mainscreen.png", 4);
     bb.setScale(1.0, 1.0);
     bb.setLocation(0, 0);
     stage.add(bb);
 
-    // Add the player's character (i.e., Bernstein)
-    BernsteinSprite bernstdh = new BernsteinSprite();
-    bernstdh.setScale(1.5);
-    stage.add(bernstdh);
-    stage.addKeyListener(bernstdh);
+    stage.addKeyListener(this);
 
     stageView.setBounds(0, 0, width, height);
-
-    stage.addKeyListener(this);
 
     stage.start();
     isPaused = false;
@@ -113,22 +108,34 @@ public class BernstdhBoard extends JApplication implements KeyListener
    * @param ke
    *          A key event
    */
-  @Override
   public void keyPressed(KeyEvent ke)
   {
     int keyCode;
     keyCode = ke.getKeyCode();
 
-    if ((keyCode == KeyEvent.VK_ENTER) && isPaused == false)
+    if ((keyCode == KeyEvent.VK_ENTER) && isPaused == false && gameStarted == true)
     {
       stage.stop();
       isPaused = true;
     }
 
-    if ((keyCode == KeyEvent.VK_ENTER) && isPaused == true)
+    if ((keyCode == KeyEvent.VK_ENTER) && isPaused == true && gameStarted == true)
     {
       stage.start();
       isPaused = false;
+    }
+
+    if ((keyCode == KeyEvent.VK_ENTER) && isPaused == false && gameStarted == false)
+    {
+      // Add the player's character (i.e., Bernstein)
+      BernsteinSprite bernstdh = new BernsteinSprite();
+      bernstdh.setScale(1.5);
+      stage.add(bernstdh);
+      stage.addKeyListener(bernstdh);
+
+      gameStarted = true;
+      
+      stage.remove(bb);
     }
   }
 
@@ -136,7 +143,6 @@ public class BernstdhBoard extends JApplication implements KeyListener
    * 
    * @param arg0
    */
-  @Override
   public void keyReleased(KeyEvent arg0)
   {
     // TODO Auto-generated method stub
@@ -147,7 +153,6 @@ public class BernstdhBoard extends JApplication implements KeyListener
    * 
    * @param arg0
    */
-  @Override
   public void keyTyped(KeyEvent arg0)
   {
     // TODO Auto-generated method stub
