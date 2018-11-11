@@ -19,7 +19,7 @@ import visual.statik.sampled.ContentFactory;
  * A game.
  * 
  * @author Behan Alavi, Jonathon Kent, Cayleigh Verhaalen
- * @version 11/6/2018
+ * @version 11/11/2018
  */
 public class BernstdhBoard extends JApplication implements KeyListener
 {
@@ -82,14 +82,14 @@ public class BernstdhBoard extends JApplication implements KeyListener
     VisualizationView stageView = stage.getView();
     stageView.setBounds(0, 0, width, height);
     contentPane.add(stageView);
-    
+
     Content bkgd = factory.createContent("background.png", 4);
     bkgd.setScale(1.0, 1.0);
     bkgd.setLocation(0, 0);
     stage.add(bkgd);
 
     // Add the mainscreen display
-     bb = factory.createContent("bernstdh-mainscreen.png", 4);
+    bb = factory.createContent("bernstdh-mainscreen.png", 4);
     bb.setScale(1.0, 1.0);
     bb.setLocation(0, 0);
     stage.add(bb);
@@ -127,16 +127,38 @@ public class BernstdhBoard extends JApplication implements KeyListener
 
     if ((keyCode == KeyEvent.VK_ENTER) && isPaused == false && gameStarted == false)
     {
+      populateBoard();
+      
       // Add the player's character (i.e., Bernstein)
       BernsteinSprite bernstdh = new BernsteinSprite();
       bernstdh.setScale(1.5);
       stage.add(bernstdh);
       stage.addKeyListener(bernstdh);
-
-      gameStarted = true;
       
+      gameStarted = true;
+
       stage.remove(bb);
     }
+  }
+  
+  public void populateBoard()
+  {
+    int randCont = (int)(Math. random() * 14 + 1);
+    int randX = (int)(Math. random() * (1100 - boardContents[randCont].getBounds2D().getWidth()) + 50);
+    int randY = 275;
+    
+    boardContents[randCont].setLocation(randX, randY);
+    boardContents[randCont].setScale(1);
+    
+    stage.add(boardContents[randCont]);
+    
+    randX = (int)(Math. random() * (1100 - boardContents[randCont].getBounds2D().getWidth()) + 50);
+    randY = 275;
+    
+    boardContents[randCont].setLocation(randX, randY);
+    boardContents[randCont].setScale(1);
+    
+    stage.add(boardContents[randCont]);
   }
 
   /**
@@ -158,5 +180,4 @@ public class BernstdhBoard extends JApplication implements KeyListener
     // TODO Auto-generated method stub
 
   }
-
 }
