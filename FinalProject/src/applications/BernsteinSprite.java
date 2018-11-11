@@ -35,13 +35,13 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   private static final int DIR2 = 1;
   private static final int DIR3 = 2;
   private static final int DIR4 = 3;
-  
+
   private static final int ERASE1 = 0;
   private static final int ERASE2 = 1;
   private static final int ERASE3 = 2;
   private static final int ERASE4 = 3;
   private static final int ERASE5 = 4;
-  
+
   private static final int UPRIGHT = 4;
 
   private static final int[] SEQUENCE = {DIR1, DIR2, DIR3, DIR4, UPRIGHT};

@@ -127,39 +127,33 @@ public class BernstdhBoard extends JApplication implements KeyListener
 
     if ((keyCode == KeyEvent.VK_ENTER) && isPaused == false && gameStarted == false)
     {
-      populateBoard();
-      
+      // populateBoard();
+
+      gameStarted = true;
+      Board board = new Board(stage);
+
+      stage.remove(bb);
+      stage.add(board);
+
       // Add the player's character (i.e., Bernstein)
-      BernsteinSprite bernstdh = new BernsteinSprite();
+      BernsteinSprite bernstdh;
+      bernstdh = new BernsteinSprite();
       bernstdh.setScale(1.5);
       stage.add(bernstdh);
       stage.addKeyListener(bernstdh);
-      
-      gameStarted = true;
 
-      stage.remove(bb);
     }
   }
-  
-  public void populateBoard()
-  {
-    int randCont = (int)(Math. random() * 14 + 1);
-    int randX = (int)(Math. random() * (1100 - boardContents[randCont].getBounds2D().getWidth()) + 50);
-    int randY = 275;
-    
-    boardContents[randCont].setLocation(randX, randY);
-    boardContents[randCont].setScale(1);
-    
-    stage.add(boardContents[randCont]);
-    
-    randX = (int)(Math. random() * (1100 - boardContents[randCont].getBounds2D().getWidth()) + 50);
-    randY = 275;
-    
-    boardContents[randCont].setLocation(randX, randY);
-    boardContents[randCont].setScale(1);
-    
-    stage.add(boardContents[randCont]);
-  }
+
+  /*
+   * public void populateBoard() { int randCont = (int) (Math.random() * 14 + 1); int randX = (int)
+   * (Math.random() * (1100 - boardContents[randCont].getBounds2D().getWidth()) + 50); int randY =
+   * 275;
+   * 
+   * boardContents[randCont].setLocation(randX, randY); boardContents[randCont].setScale(1);
+   * 
+   * stage.add(boardContents[randCont]); }
+   */
 
   /**
    * 
