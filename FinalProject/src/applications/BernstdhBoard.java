@@ -127,26 +127,13 @@ public class BernstdhBoard extends JApplication implements KeyListener
 
     if ((keyCode == KeyEvent.VK_ENTER) && isPaused == false && gameStarted == false)
     {
-      // populateBoard();
-
       gameStarted = true;
       Board board = new Board(stage);
       
-
       stage.remove(bb);
       stage.add(board);
     }
   }
-
-  /*
-   * public void populateBoard() { int randCont = (int) (Math.random() * 14 + 1); int randX = (int)
-   * (Math.random() * (1100 - boardContents[randCont].getBounds2D().getWidth()) + 50); int randY =
-   * 275;
-   * 
-   * boardContents[randCont].setLocation(randX, randY); boardContents[randCont].setScale(1);
-   * 
-   * stage.add(boardContents[randCont]); }
-   */
 
   /**
    * 

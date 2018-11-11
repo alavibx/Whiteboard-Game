@@ -231,4 +231,28 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
 
     setLocation(xBernstein, yBernstein);
   }
+  
+  public String getPosition()
+  {
+    String pos;
+    
+    if (position == RIGHT)
+    {
+      pos = "right";
+    }
+    else if (position == LEFT)
+    {
+      pos = "left";
+    }
+    else if (position == BACK)
+    {
+      pos = "back";
+    }
+    else
+    {
+      pos = "upright";
+    }
+    
+    return pos;
+  }
 }
