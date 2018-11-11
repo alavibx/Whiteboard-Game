@@ -1,4 +1,0 @@
-bernstein_walkingright-sp1.png
-bernstein_walkingright-sp2.png
-bernstein_walkingright-sp3.png
-bernstein_walkingright-sp4.png

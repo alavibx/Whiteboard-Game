@@ -55,7 +55,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
     super();
 
     xBernstein = 300;
-    yBernstein = 115;
+    yBernstein = 275;
 
     ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
     ContentFactory factory = new ContentFactory(finder);
@@ -76,7 +76,6 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   public void keyPressed(KeyEvent ke)
   {
     int keyCode;
-
     keyCode = ke.getKeyCode();
 
     if ((keyCode == KeyEvent.VK_KP_RIGHT) || (keyCode == KeyEvent.VK_RIGHT))

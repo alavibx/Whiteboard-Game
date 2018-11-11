@@ -1,7 +1,8 @@
 package applications;
 
 import java.awt.Color;
-import java.awt.image.BufferedImage;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JPanel;
@@ -9,12 +10,8 @@ import javax.swing.SwingUtilities;
 
 import app.JApplication;
 import io.ResourceFinder;
-import visual.ScaledVisualizationRenderer;
-import visual.Visualization;
 import visual.VisualizationView;
 import visual.dynamic.described.Stage;
-import visual.dynamic.sampled.Screen;
-import visual.statik.SimpleContent;
 import visual.statik.sampled.Content;
 import visual.statik.sampled.ContentFactory;
 
@@ -24,11 +21,13 @@ import visual.statik.sampled.ContentFactory;
  * @author Behan Alavi, Jonathon Kent, Cayleigh Verhaalen
  * @version 11/6/2018
  */
-public class BernstdhBoard extends JApplication
+public class BernstdhBoard extends JApplication implements KeyListener
 {
-  private SimpleContent[] bernstein_left;
-  private SimpleContent[] bernstein_right;
-  private SimpleContent[] bernstein_erase;
+  private Content[] boardContents;
+  private JPanel contentPane;
+  private boolean isPaused, gameStarted;
+
+  Stage stage;
 
   /**
    * Contructs a new BernstdhBoard of the size width x height.
@@ -53,7 +52,7 @@ public class BernstdhBoard extends JApplication
    */
   public static void main(String[] args) throws InvocationTargetException, InterruptedException
   {
-    SwingUtilities.invokeAndWait(new BernstdhBoard(1190, 600));
+    SwingUtilities.invokeAndWait(new BernstdhBoard(1200, 600));
   }
 
   /**
@@ -63,40 +62,96 @@ public class BernstdhBoard extends JApplication
   @Override
   public void init()
   {
-    JPanel contentPane = (JPanel) this.getContentPane();
+    contentPane = (JPanel) this.getContentPane();
     ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
+    ContentFactory factory = new ContentFactory(finder);
 
-    // the stage
-    Stage stage = new Stage(75);
-    stage.setBackground(Color.BLUE);
+    // Create and add the stage
+    stage = new Stage(75);
+    stage.setBackground(Color.WHITE);
     VisualizationView stageView = stage.getView();
     stageView.setBounds(0, 0, width, height);
-
-    ContentFactory factory = new ContentFactory(finder);
+    contentPane.add(stageView);
 
     // Add the words to the board
     // Content word = factory.createContent("word.png", 4);
     // word.setLocation(0, 480 - 144);
     // stage.add(word);
 
-    // add the back ground
-    Content bkgd = factory.createContent("maingame_background.png", 4);
+    // Get the contents that will display on the whiteboard
+    String[] files = finder.loadResourceNames("content.txt");
+    boardContents = factory.createContents(files, 4);
+
+    // Add the background
+    Content bkgd = factory.createContent("background.png", 4);
     bkgd.setScale(1, 1);
     stage.add(bkgd);
 
+    // Add the mainscreen display
+    Content bb = factory.createContent("bernstdh-mainscreen.png", 4);
+    bb.setScale(1.0, 1.0);
+    bb.setLocation(0, 0);
+    stage.add(bb);
+
     // Add the player's character (i.e., Bernstein)
     BernsteinSprite bernstdh = new BernsteinSprite();
+    bernstdh.setScale(1.5);
     stage.add(bernstdh);
     stage.addKeyListener(bernstdh);
 
-    // add the foreground
-    Content frgd = factory.createContent("maingame_foreground.png", 4);
-    frgd.setScale(1, 1);
-    stage.add(frgd);
-
     stageView.setBounds(0, 0, width, height);
-    contentPane.add(stageView);
+
+    stage.addKeyListener(this);
+
     stage.start();
+    isPaused = false;
+    gameStarted = false;
+  }
+
+  /**
+   * 
+   * @param ke
+   *          A key event
+   */
+  @Override
+  public void keyPressed(KeyEvent ke)
+  {
+    int keyCode;
+    keyCode = ke.getKeyCode();
+
+    if ((keyCode == KeyEvent.VK_ENTER) && isPaused == false)
+    {
+      stage.stop();
+      isPaused = true;
+    }
+
+    if ((keyCode == KeyEvent.VK_ENTER) && isPaused == true)
+    {
+      stage.start();
+      isPaused = false;
+    }
+  }
+
+  /**
+   * 
+   * @param arg0
+   */
+  @Override
+  public void keyReleased(KeyEvent arg0)
+  {
+    // TODO Auto-generated method stub
+
+  }
+
+  /**
+   * 
+   * @param arg0
+   */
+  @Override
+  public void keyTyped(KeyEvent arg0)
+  {
+    // TODO Auto-generated method stub
+
   }
 
 }
