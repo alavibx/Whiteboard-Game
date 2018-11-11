@@ -45,7 +45,6 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   private static final int UPRIGHT = 4;
 
   private static final int[] SEQUENCE = {DIR1, DIR2, DIR3, DIR4, UPRIGHT};
-  private static final int[] SEQUENCE_ERASE = {ERASE1, ERASE2, ERASE3, ERASE4, ERASE5};
 
   /**
    * Explicit Value Constructor

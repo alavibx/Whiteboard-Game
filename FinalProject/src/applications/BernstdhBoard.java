@@ -131,17 +131,10 @@ public class BernstdhBoard extends JApplication implements KeyListener
 
       gameStarted = true;
       Board board = new Board(stage);
+      
 
       stage.remove(bb);
       stage.add(board);
-
-      // Add the player's character (i.e., Bernstein)
-      BernsteinSprite bernstdh;
-      bernstdh = new BernsteinSprite();
-      bernstdh.setScale(1.5);
-      stage.add(bernstdh);
-      stage.addKeyListener(bernstdh);
-
     }
   }
 
