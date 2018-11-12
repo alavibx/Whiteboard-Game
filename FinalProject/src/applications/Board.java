@@ -1,6 +1,7 @@
 package applications;
 
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -22,6 +23,7 @@ public class Board extends AbstractSprite
 {
 
   private Content[] boardContents;
+  private ArrayList<Content> contents;
   private Stage stage;
   private BernsteinSprite bernstdh;
   ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
@@ -43,12 +45,8 @@ public class Board extends AbstractSprite
     bernstdh.setScale(1.5);
     stage.add(bernstdh);
     stage.addKeyListener(bernstdh);
-    /*
-     * System.out.println(bernstdh.getBounds2D().getWidth());
-     * System.out.println(bernstdh.getBounds2D().getHeight());
-     * System.out.println(bernstdh.getBounds2D().getX());
-     * System.out.println(bernstdh.getBounds2D().getY());
-     */
+    
+    contents = new ArrayList<Content>();
   }
 
   /**
@@ -58,14 +56,17 @@ public class Board extends AbstractSprite
   public Content randomWord()
   {
 
-    int randCont = (int) (Math.random() * 14);
+    int randCont = (int) (Math.random() * 13);
     int randX = (int) (Math.random() * (1100 - boardContents[randCont].getBounds2D().getWidth())
         + 50);
     int randY = 275;
 
-    boardContents[randCont].setLocation(randX, randY);
+    Content c = boardContents[randCont];
+    c.setLocation(randX, randY);
+    
+    contents.add(c);
 
-    return boardContents[randCont];
+    return contents.get(contents.size()-1);
   }
 
   /**
@@ -73,11 +74,11 @@ public class Board extends AbstractSprite
    */
   public void handleTick(int time)
   {
-    for (int i = 0; i < boardContents.length; i++)
+    for (int i = 0; i < contents.size(); i++)
     {
-      if (intersects(boardContents[i], bernstdh) && bernstdh.getPosition().equals("back"))
+      if (intersects(contents.get(i), bernstdh) && bernstdh.getDirection().equals("back"))
       {
-        stage.remove(boardContents[i]);
+        stage.remove(contents.get(i));
       }
     }
 
@@ -101,9 +102,9 @@ public class Board extends AbstractSprite
 
     // Get the bounding box of the sprite
     r = s.getBounds2D(true);
-    minx = r.getX() + 90;
+    minx = r.getX() + 115;
     miny = r.getY();
-    maxx = minx + 55;
+    maxx = minx + 40;
     maxy = miny + 40;
 
     // Get the bounding box of the content

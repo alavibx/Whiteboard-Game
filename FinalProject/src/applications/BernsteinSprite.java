@@ -82,7 +82,9 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
     else if ((keyCode == KeyEvent.VK_KP_LEFT) || (keyCode == KeyEvent.VK_LEFT))
       handleLeft();
     else if (keyCode == KeyEvent.VK_SPACE)
+    {
       handleFire();
+    }
   }
 
   /**
@@ -231,28 +233,28 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
 
     setLocation(xBernstein, yBernstein);
   }
-  
-  public String getPosition()
+
+  public String getDirection()
   {
-    String pos;
-    
-    if (position == RIGHT)
+    String dir;
+
+    if (direction == RIGHT)
     {
-      pos = "right";
+      dir = "right";
     }
-    else if (position == LEFT)
+    else if (direction == LEFT)
     {
-      pos = "left";
+      dir = "left";
     }
-    else if (position == BACK)
+    else if (direction == BACK)
     {
-      pos = "back";
+      dir = "back";
     }
     else
     {
-      pos = "upright";
+      dir = "upright";
     }
-    
-    return pos;
+
+    return dir;
   }
 }
