@@ -26,6 +26,7 @@ public class Board extends AbstractSprite
   private ArrayList<Content> contents;
   private Stage stage;
   private BernsteinSprite bernstdh;
+  private int score;
   ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
   ContentFactory factory = new ContentFactory(finder);
 
@@ -47,6 +48,8 @@ public class Board extends AbstractSprite
     stage.addKeyListener(bernstdh);
     
     contents = new ArrayList<Content>();
+    
+    score = 0;
   }
 
   /**
@@ -125,5 +128,10 @@ public class Board extends AbstractSprite
   {
     // TODO Auto-generated method stub
     return randomWord();
+  }
+  
+  public int getScore()
+  {
+    return score;
   }
 }

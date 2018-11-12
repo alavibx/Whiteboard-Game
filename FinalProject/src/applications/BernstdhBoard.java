@@ -1,14 +1,23 @@
 package applications;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import app.JApplication;
+import event.MetronomeListener;
 import io.ResourceFinder;
 import visual.VisualizationView;
 import visual.dynamic.described.Stage;
@@ -27,6 +36,8 @@ public class BernstdhBoard extends JApplication implements KeyListener
   private JPanel contentPane;
   private Content bb;
   private boolean isPaused, gameStarted;
+  private JLabel score;
+  private Board board;
 
   Stage stage;
 
@@ -64,13 +75,19 @@ public class BernstdhBoard extends JApplication implements KeyListener
   public void init()
   {
     contentPane = (JPanel) this.getContentPane();
+    contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.PAGE_AXIS));
+
     ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
     ContentFactory factory = new ContentFactory(finder);
 
-    // Add the words to the board
-    // Content word = factory.createContent("word.png", 4);
-    // word.setLocation(0, 480 - 144);
-    // stage.add(word);
+    score = new JLabel("Welcome to ISAT 236", SwingConstants.CENTER);
+    score.setFont(new Font(score.getFont().getName(), Font.ITALIC, 20));
+
+    JPanel centerPanel = new JPanel(new GridLayout(0, 1));
+    centerPanel.setBackground(Color.WHITE);
+    centerPanel.add(score);
+
+    contentPane.add(centerPanel);
 
     // Get the contents that will display on the whiteboard
     String[] files = finder.loadResourceNames("content.txt");
@@ -81,6 +98,7 @@ public class BernstdhBoard extends JApplication implements KeyListener
     stage.setBackground(Color.WHITE);
     VisualizationView stageView = stage.getView();
     stageView.setBounds(0, 0, width, height);
+    
     contentPane.add(stageView);
 
     Content bkgd = factory.createContent("background.png", 4);
@@ -128,8 +146,11 @@ public class BernstdhBoard extends JApplication implements KeyListener
     if ((keyCode == KeyEvent.VK_ENTER) && isPaused == false && gameStarted == false)
     {
       gameStarted = true;
-      Board board = new Board(stage);
+      board = new Board(stage);
       
+      score.setText("Y O U   A L L  F A I L");
+      
+
       stage.remove(bb);
       stage.add(board);
     }
@@ -154,4 +175,5 @@ public class BernstdhBoard extends JApplication implements KeyListener
     // TODO Auto-generated method stub
 
   }
+
 }
