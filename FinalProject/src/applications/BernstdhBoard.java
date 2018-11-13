@@ -4,11 +4,21 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.BoxLayout;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -17,6 +27,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import app.JApplication;
+import auditory.sampled.BufferedSound;
+import auditory.sampled.BufferedSoundFactory;
 import event.MetronomeListener;
 import io.ResourceFinder;
 import visual.VisualizationView;
@@ -28,16 +40,20 @@ import visual.statik.sampled.ContentFactory;
  * A game.
  * 
  * @author Behan Alavi, Jonathon Kent, Cayleigh Verhaalen
- * @version 11/11/2018
+ * @version 11/13/2018
  */
-public class BernstdhBoard extends JApplication implements KeyListener
+public class BernstdhBoard extends JApplication implements KeyListener, MetronomeListener
 {
   private Content[] boardContents;
+  private Content bkgd, bb;
   private JPanel contentPane;
-  private Content bb;
   private boolean isPaused, gameStarted;
   private JLabel score;
   private Board board;
+  private JFrame mainWindow;
+  private ResourceFinder finder;
+  private Clip mainClip, gameClip;
+  private VisualizationView stageView;
 
   Stage stage;
 
@@ -74,11 +90,19 @@ public class BernstdhBoard extends JApplication implements KeyListener
   @Override
   public void init()
   {
+    // SET THE VISUAL COMPONENTS OF THE GUI
+    // Get the content pane of the window
     contentPane = (JPanel) this.getContentPane();
     contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.PAGE_AXIS));
 
-    ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
+    // Get the main window from the content pane (originally set in JApplication)
+    mainWindow = (JFrame) SwingUtilities.getWindowAncestor(contentPane);
+    // mainWindow.setResizable(true);
+    mainWindow.setTitle("Bernstdh-Board");
+
+    finder = ResourceFinder.createInstance(resources.Marker.class);
     ContentFactory factory = new ContentFactory(finder);
+    // BufferedSoundFactory bfactory = new BufferedSoundFactory(finder);
 
     score = new JLabel("Welcome to ISAT 236", SwingConstants.CENTER);
     score.setFont(new Font(score.getFont().getName(), Font.ITALIC, 20));
@@ -86,7 +110,6 @@ public class BernstdhBoard extends JApplication implements KeyListener
     JPanel centerPanel = new JPanel(new GridLayout(0, 1));
     centerPanel.setBackground(Color.WHITE);
     centerPanel.add(score);
-
     contentPane.add(centerPanel);
 
     // Get the contents that will display on the whiteboard
@@ -96,12 +119,11 @@ public class BernstdhBoard extends JApplication implements KeyListener
     // Create and add the stage
     stage = new Stage(75);
     stage.setBackground(Color.WHITE);
-    VisualizationView stageView = stage.getView();
-    stageView.setBounds(0, 0, width, height);
-    
+    stageView = stage.getView();
     contentPane.add(stageView);
 
-    Content bkgd = factory.createContent("background.png", 4);
+    // Set the background image
+    bkgd = factory.createContent("background.png", 4);
     bkgd.setScale(1.0, 1.0);
     bkgd.setLocation(0, 0);
     stage.add(bkgd);
@@ -114,6 +136,21 @@ public class BernstdhBoard extends JApplication implements KeyListener
 
     stage.addKeyListener(this);
 
+    try
+    {
+      // BufferedSound main = bfactory.createBufferedSound("main.wav");
+      mainClip = AudioSystem.getClip();
+      AudioInputStream inputStream = AudioSystem.getAudioInputStream(finder.findURL("main.wav"));
+      mainClip.open(inputStream);
+      mainClip.start();
+      mainClip.loop(Clip.LOOP_CONTINUOUSLY);
+    }
+    catch (IOException | UnsupportedAudioFileException | LineUnavailableException e)
+    {
+      // Do nothing
+    }
+
+    // Make the view "visible"
     stageView.setBounds(0, 0, width, height);
 
     stage.start();
@@ -122,6 +159,8 @@ public class BernstdhBoard extends JApplication implements KeyListener
   }
 
   /**
+   * Responds to events when the "Enter" key is pressed. Different events occur under different
+   * conditions.
    * 
    * @param ke
    *          A key event
@@ -145,11 +184,27 @@ public class BernstdhBoard extends JApplication implements KeyListener
 
     if ((keyCode == KeyEvent.VK_ENTER) && isPaused == false && gameStarted == false)
     {
+
       gameStarted = true;
       board = new Board(stage);
-      
-      score.setText("Y O U   A L L  F A I L");
-      
+
+      stage.getMetronome().addListener(this);
+
+      try
+      {
+        // BufferedSound main = bfactory.createBufferedSound("main.wav");
+        gameClip = AudioSystem.getClip();
+        AudioInputStream inputStream = AudioSystem.getAudioInputStream(finder.findURL("game.wav"));
+        gameClip.open(inputStream);
+        gameClip.start();
+        mainClip.stop();
+        mainClip.close();
+        gameClip.loop(Clip.LOOP_CONTINUOUSLY);
+      }
+      catch (IOException | UnsupportedAudioFileException | LineUnavailableException e)
+      {
+        // Do nothing
+      }
 
       stage.remove(bb);
       stage.add(board);
@@ -162,8 +217,7 @@ public class BernstdhBoard extends JApplication implements KeyListener
    */
   public void keyReleased(KeyEvent arg0)
   {
-    // TODO Auto-generated method stub
-
+    // Unimplemented
   }
 
   /**
@@ -172,8 +226,15 @@ public class BernstdhBoard extends JApplication implements KeyListener
    */
   public void keyTyped(KeyEvent arg0)
   {
-    // TODO Auto-generated method stub
-
+    // Unimplemented
   }
 
+  /**
+   * 
+   */
+  @Override
+  public void handleTick(int arg0)
+  {
+
+  }
 }

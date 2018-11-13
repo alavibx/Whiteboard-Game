@@ -1,14 +1,9 @@
 package applications;
 
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-
-import javax.swing.JDialog;
-import javax.swing.JLabel;
 
 import io.ResourceFinder;
 import visual.dynamic.described.AbstractSprite;
-import visual.dynamic.described.Sprite;
 import visual.dynamic.described.Stage;
 import visual.statik.TransformableContent;
 import visual.statik.sampled.Content;
@@ -17,16 +12,15 @@ import visual.statik.sampled.ContentFactory;
 /**
  * 
  * @author Behan Alavi, Jonathon Kent, Cayleigh Verhaalen
- * @version 11/11/2018
+ * @version 11/13/2018
  */
 public class Board extends AbstractSprite
 {
 
   private Content[] boardContents;
-  private ArrayList<Content> contents;
+  private ArrayList<BoardSprite> contents;
   private Stage stage;
   private BernsteinSprite bernstdh;
-  private int score;
   ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
   ContentFactory factory = new ContentFactory(finder);
 
@@ -47,29 +41,23 @@ public class Board extends AbstractSprite
     stage.add(bernstdh);
     stage.addKeyListener(bernstdh);
     
-    contents = new ArrayList<Content>();
-    
-    score = 0;
+    contents = new ArrayList<BoardSprite>();
   }
 
   /**
    * 
    * @return
    */
-  public Content randomWord()
+  public BoardSprite randomSprite()
   {
-
-    int randCont = (int) (Math.random() * 13);
-    int randX = (int) (Math.random() * (1100 - boardContents[randCont].getBounds2D().getWidth())
-        + 50);
-    int randY = 275;
-
-    Content c = boardContents[randCont];
-    c.setLocation(randX, randY);
+    int randCont = (int) (Math.random() * (boardContents.length - 1));
+    
+    BoardSprite c = new BoardSprite(boardContents[randCont]);
+    c.setLocation(c.getX(), c.getY());
     
     contents.add(c);
 
-    return contents.get(contents.size()-1);
+    return c;
   }
 
   /**
@@ -79,7 +67,9 @@ public class Board extends AbstractSprite
   {
     for (int i = 0; i < contents.size(); i++)
     {
-      if (intersects(contents.get(i), bernstdh) && bernstdh.getDirection().equals("back"))
+      BoardSprite c = contents.get(i);
+      
+      if (c.intersects(bernstdh) && bernstdh.getDirection().equals("back"))
       {
         stage.remove(contents.get(i));
       }
@@ -87,14 +77,14 @@ public class Board extends AbstractSprite
 
     if (time % 3000 == 0)
     {
-      stage.add(randomWord());
+      stage.add(randomSprite());
       stage.remove(bernstdh);
       stage.add(bernstdh);
     }
 
   }
 
-  public boolean intersects(Content c, Sprite s)
+  /*public boolean intersects(Content c, Sprite s)
   {
     boolean retval;
     double maxx, maxy, minx, miny;
@@ -121,17 +111,11 @@ public class Board extends AbstractSprite
       retval = false;
 
     return retval;
-  }
+  }*/
 
   @Override
   protected TransformableContent getContent()
   {
-    // TODO Auto-generated method stub
-    return randomWord();
-  }
-  
-  public int getScore()
-  {
-    return score;
+    return randomSprite();
   }
 }

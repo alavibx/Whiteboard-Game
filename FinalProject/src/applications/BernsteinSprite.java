@@ -11,12 +11,10 @@ import visual.dynamic.described.*;
 /**
  * The main character in the game Bernstdh-board.
  *
- * Mick is a Sprite that responds to user interaction. It is an example of a Sprite that uses
- * multiple pieces of visual content that vary depending on the state (e.g., walking left, walking
- * right, etc...).
+ * Bernstein is a Sprite that responds to user interaction.
  *
- * @author Prof. David Bernstein, James Madison University
- * @version 1.0
+ * @author Behan Alavi, Jonathon Kent, Cayleigh Verhaalen
+ * @version 11/13/2018
  */
 public class BernsteinSprite extends AbstractSprite implements KeyListener
 {
