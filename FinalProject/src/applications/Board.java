@@ -3,6 +3,7 @@ package applications;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
+import javax.swing.text.html.HTMLDocument.Iterator;
 
 import io.ResourceFinder;
 import visual.dynamic.described.AbstractSprite;
@@ -56,6 +57,7 @@ public class Board extends AbstractSprite
     int randCont = (int) (Math.random() * (boardContents.length - 1));
     
     BoardSprite c = new BoardSprite(boardContents[randCont]);
+    
     c.setLocation(c.getX(), c.getY());
     
     contents.add(c);
@@ -70,11 +72,12 @@ public class Board extends AbstractSprite
   {
     for (int i = 0; i < contents.size(); i++)
     {
-      BoardSprite c = contents.get(i);
-      
-      if (c.intersects(bernstdh) && bernstdh.getDirection().equals("back"))
+      if (contents.get(i).intersectsBernstein(bernstdh)
+          && bernstdh.getDirection() == BernsteinSprite.BACK
+          && bernstdh.getPosition() == BernsteinSprite.ERASE2)
       {
         stage.remove(contents.get(i));
+        contents.remove(i);
       }
     }
 

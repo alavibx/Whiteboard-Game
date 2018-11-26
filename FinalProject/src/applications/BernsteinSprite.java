@@ -18,16 +18,16 @@ import visual.dynamic.described.*;
  */
 public class BernsteinSprite extends AbstractSprite implements KeyListener
 {
-  private boolean nearLeftEdge, nearRightEdge;
-  private int lastTickTime, xBernstein, yBernstein;
+  private boolean nearLeftEdge, nearRightEdge, nearTop;
+  private int curTime, jumpTime, xBernstein, yBernstein;
   private int direction, position;
   private int rightEdge, leftEdge;
   private Content[][] images;
 
   // directions
-  private static final int RIGHT = 0;
-  private static final int LEFT = 1;
-  private static final int BACK = 2;
+  public static final int RIGHT = 0;
+  public static final int LEFT = 1;
+  public static final int BACK = 2;
 
   // positions
   private static final int DIR1 = 0;
@@ -35,10 +35,10 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   private static final int DIR3 = 2;
   private static final int DIR4 = 3;
 
-  private static final int ERASE1 = 0;
-  private static final int ERASE3 = 2;
+  public static final int ERASE1 = 0;
+  public static final int ERASE2 = 1;
 
-  private static final int UPRIGHT = 4;
+  public static final int UPRIGHT = 4;
 
   private static final int[] SEQUENCE = {DIR1, DIR2, DIR3, DIR4, UPRIGHT};
 
@@ -57,6 +57,8 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
     images = factory.createContents("bernstein_sprites.png", 3, 5, 4);
     direction = RIGHT;
     position = 4;
+    
+    jumpTime = 0;
 
     setLocation(xBernstein, yBernstein);
     setVisible(true);
@@ -77,6 +79,8 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
       handleRight();
     else if ((keyCode == KeyEvent.VK_KP_LEFT) || (keyCode == KeyEvent.VK_LEFT))
       handleLeft();
+    else if ((keyCode == KeyEvent.VK_KP_UP) || (keyCode == KeyEvent.VK_UP))
+      handleJump();
     else if (keyCode == KeyEvent.VK_SPACE)
     {
       handleFire();
@@ -147,7 +151,19 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   {
     direction = BACK;
     position = ERASE1;
-    position = ERASE3;
+    position = ERASE2;
+  }
+  
+  public void handleJump()
+  {
+    if (!nearTop)
+    {
+      direction = BACK;
+      position = ERASE1;
+      yBernstein -= 100;
+    }
+    
+    jumpTime = 3000;
   }
 
   /**
@@ -220,8 +236,8 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
    */
   public void handleTick(int time)
   {
-    lastTickTime = time;
-
+    jumpTime -= 100;
+    
     if (xBernstein > 1045)
       nearRightEdge = true;
     else
@@ -231,31 +247,44 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
       nearLeftEdge = false;
     else
       nearLeftEdge = true;
+    
+    if (yBernstein < 200)
+      nearTop = true;
+    else
+      nearTop = false;
+    
+    if (jumpTime == 0)
+      yBernstein += 100;
 
     setLocation(xBernstein, yBernstein);
   }
 
-  public String getDirection()
+  public int getDirection()
   {
-    String dir;
+    int dir;
 
     if (direction == RIGHT)
     {
-      dir = "right";
+      dir = RIGHT;
     }
     else if (direction == LEFT)
     {
-      dir = "left";
+      dir = LEFT;
     }
     else if (direction == BACK)
     {
-      dir = "back";
+      dir = BACK;
     }
     else
     {
-      dir = "upright";
+      dir = UPRIGHT;
     }
 
     return dir;
+  }
+  
+  public int getPosition()
+  {
+    return position;
   }
 }
