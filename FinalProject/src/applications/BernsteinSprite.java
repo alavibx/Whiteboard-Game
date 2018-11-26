@@ -21,6 +21,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   private boolean nearLeftEdge, nearRightEdge;
   private int lastTickTime, xBernstein, yBernstein;
   private int direction, position;
+  private int rightEdge, leftEdge;
   private Content[][] images;
 
   // directions
@@ -35,10 +36,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   private static final int DIR4 = 3;
 
   private static final int ERASE1 = 0;
-  private static final int ERASE2 = 1;
   private static final int ERASE3 = 2;
-  private static final int ERASE4 = 3;
-  private static final int ERASE5 = 4;
 
   private static final int UPRIGHT = 4;
 
@@ -104,6 +102,24 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
    */
   public void keyTyped(KeyEvent ke)
   {
+  }
+  
+  /**
+   * Returns the x position of Bernstein on the GUI.
+   * @return
+   */
+  public int getX()
+  {
+    return xBernstein;
+  }
+  
+  /**
+   * Returns the y position of Bernstein on the GUI.
+   * @return
+   */
+  public int getY()
+  {
+    return yBernstein;
   }
 
   /**
@@ -193,20 +209,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
    */
   public void render(Graphics g)
   {
-    int tx, ty;
-
-    /**
-     * if (tongueOnPole) { tongues[RIGHT].render(g); } else if (tongueOut) { tx = xMick +
-     * TONGUE_X[direction]; ty = yMick + TONGUE_Y[SEQUENCE[position]];
-     * 
-     * tongues[direction].setLocation(tx, ty); tongues[direction].render(g);
-     * 
-     * 
-     * }
-     **/
-
     super.render(g);
-
   }
 
   /**

@@ -19,7 +19,8 @@ public class BoardSprite extends RuleBasedSprite
   {
     super(content);
 
-    x = (int) (Math.random() * (1100 - content.getBounds2D(false).getWidth()) + 50);
+    // Generate the x of the content randomly across the width of the whiteboard
+    x = (int) (Math.random() * (Board.BKGD_WIDTH - content.getBounds2D(false).getWidth()));
     y = 275;
   }
   
