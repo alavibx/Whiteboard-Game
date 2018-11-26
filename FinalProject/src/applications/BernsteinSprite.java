@@ -19,9 +19,8 @@ import visual.dynamic.described.*;
 public class BernsteinSprite extends AbstractSprite implements KeyListener
 {
   private boolean nearLeftEdge, nearRightEdge, nearTop;
-  private int curTime, jumpTime, xBernstein, yBernstein;
+  private int jumpTime, xBernstein, yBernstein;
   private int direction, position;
-  private int rightEdge, leftEdge;
   private Content[][] images;
 
   // directions
@@ -57,7 +56,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
     images = factory.createContents("bernstein_sprites.png", 3, 5, 4);
     direction = RIGHT;
     position = 4;
-    
+
     jumpTime = 0;
 
     setLocation(xBernstein, yBernstein);
@@ -107,18 +106,20 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   public void keyTyped(KeyEvent ke)
   {
   }
-  
+
   /**
    * Returns the x position of Bernstein on the GUI.
+   * 
    * @return
    */
   public int getX()
   {
     return xBernstein;
   }
-  
+
   /**
    * Returns the y position of Bernstein on the GUI.
+   * 
    * @return
    */
   public int getY()
@@ -153,7 +154,10 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
     position = ERASE1;
     position = ERASE2;
   }
-  
+
+  /**
+   * Handle a JUMP GameButtonEvent.
+   */
   public void handleJump()
   {
     if (!nearTop)
@@ -162,8 +166,8 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
       position = ERASE1;
       yBernstein -= 100;
     }
-    
-    jumpTime = 3000;
+
+    jumpTime = 2400;
   }
 
   /**
@@ -184,7 +188,6 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
       direction = LEFT;
       position = DIR1;
     }
-
   }
 
   /**
@@ -206,7 +209,6 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
       direction = RIGHT;
       position = DIR1;
     }
-
   }
 
   /**
@@ -236,8 +238,10 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
    */
   public void handleTick(int time)
   {
-    jumpTime -= 100;
-    
+    if (jumpTime > 0)
+      jumpTime -= 150;
+
+    // Keep Bernstein from walking off the edge of the screen
     if (xBernstein > 1045)
       nearRightEdge = true;
     else
@@ -247,18 +251,31 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
       nearLeftEdge = false;
     else
       nearLeftEdge = true;
-    
+
+    // Keep Bernstein from jumping too high
     if (yBernstein < 200)
       nearTop = true;
     else
       nearTop = false;
-    
+
+    // Make Bernstein "slide" down
+    if (jumpTime < 300 && jumpTime > 0)
+      yBernstein += 10;
+
+    // Set Bernstein back to his original y position
     if (jumpTime == 0)
-      yBernstein += 100;
+    {
+      yBernstein = 275;
+    }
 
     setLocation(xBernstein, yBernstein);
   }
 
+  /**
+   * Returns the direction number of Bernstein.
+   * 
+   * @return Returns the direction of Bernstein
+   */
   public int getDirection()
   {
     int dir;
@@ -282,7 +299,12 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
 
     return dir;
   }
-  
+
+  /**
+   * Returns the position number of Bernstein.
+   * 
+   * @return The current position of Bernstein
+   */
   public int getPosition()
   {
     return position;
