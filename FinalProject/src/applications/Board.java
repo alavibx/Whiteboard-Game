@@ -19,24 +19,29 @@ import visual.statik.sampled.ContentFactory;
  */
 public class Board extends AbstractSprite
 {
-  private Content[] boardContents;
   private ArrayList<BoardSprite> contents;
-  private Stage stage;
   private BernsteinSprite bernstdh;
-  ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
-  ContentFactory factory = new ContentFactory(finder);
+  private Content[] boardContents;
+  private Stage stage;
+  private int totalPoints;
   
-  public static final int BKGD_WIDTH = 1200;
-  public static final int BKGD_HEIGHT = 600;
+  private ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
+  private ContentFactory factory = new ContentFactory(finder);
+
+  public static int bkgd_width;
+  public static int bkgd_height;
 
   /**
    * 
    * @param stage
    */
-  public Board(Stage stage, JFrame window)
+  public Board(Stage stage)
   {
+    // Get the content images from the files in the resources folder and store them in array
     String[] files = finder.loadResourceNames("content.txt");
     boardContents = factory.createContents(files, 4);
+
+    // Get the stage
     this.stage = stage;
 
     // Add the player's character (i.e., Bernstein)
@@ -44,7 +49,12 @@ public class Board extends AbstractSprite
     bernstdh.setScale(1.5);
     stage.add(bernstdh);
     stage.addKeyListener(bernstdh);
-    
+
+    // Get the width and height of the stage
+    bkgd_width = stage.getView().getWidth();
+    bkgd_height = stage.getView().getHeight();
+
+    // Initialize an arraylist to hold all of the contents that occupy the board
     contents = new ArrayList<BoardSprite>();
   }
 
@@ -54,12 +64,15 @@ public class Board extends AbstractSprite
    */
   public BoardSprite randomSprite()
   {
+    // Get a random index number
     int randCont = (int) (Math.random() * (boardContents.length - 1));
-    
+
+    // Create a random board sprite from the array of contents
     BoardSprite c = new BoardSprite(boardContents[randCont]);
-    
+
     c.setLocation(c.getX(), c.getY());
-    
+
+    // Add the board sprite to the array list of board-occupying contents
     contents.add(c);
 
     return c;
@@ -77,7 +90,9 @@ public class Board extends AbstractSprite
           && bernstdh.getPosition() == BernsteinSprite.ERASE2)
       {
         stage.remove(contents.get(i));
+        totalPoints += contents.get(i).getPoints();
         contents.remove(i);
+        stage.repaint();
       }
     }
 
@@ -87,6 +102,11 @@ public class Board extends AbstractSprite
       stage.remove(bernstdh);
       stage.add(bernstdh);
     }
+  }
+  
+  public int getTotalPoints()
+  {
+    return totalPoints;
   }
 
   @Override

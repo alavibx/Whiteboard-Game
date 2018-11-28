@@ -14,23 +14,60 @@ import visual.statik.TransformableContent;
 public class BoardSprite extends RuleBasedSprite
 {
   private int x, y;
+  private int width, height;
+  private int points;
 
   public BoardSprite(TransformableContent content)
   {
     super(content);
+    
+    points = 0;
+    
+    // Get the width and height of the content
+    width = (int) content.getBounds2D(false).getWidth();
+    height = (int) content.getBounds2D(false).getHeight();
 
     // Generate the x of the content randomly across the width of the whiteboard
-    x = (int) (Math.random() * (Board.BKGD_WIDTH - content.getBounds2D(false).getWidth()));
+    x = (int) (Math.random() * ((Board.bkgd_width - 75) - width) + 25);
     
     if (Math.round(Math.random()) == 0)
+    {
       y = 275;
+      points += 50;
+    }
     else
+    {
       y = 175;
+      points += 150;
+    }
+    
+    if (width >= 400)
+      points += 200;
+    else if (width >= 300)
+      points += 150;
+    else if (width >= 200)
+      points += 100;
+    else
+      points += 50;
+    
+    if (height >= 100)
+      points += 100;
+    else if (height >= 75)
+      points += 75;
+    else if (height >= 50)
+      points += 50;
+    else
+      points += 25;
   }
   
   public void newX()
   {
-    x = (int) (Math.random() * (Board.BKGD_WIDTH - content.getBounds2D(false).getWidth()));
+    x = (int) (Math.random() * (Board.bkgd_width - width));
+  }
+  
+  public int getPoints()
+  {
+    return points;
   }
   
   public int getX()
@@ -86,12 +123,13 @@ public class BoardSprite extends RuleBasedSprite
 
     retval = true;
 
-    // Get the bounding box of the sprite
+    // Get the bounding box of the eraser portion of the Bernstein sprite
     r = s.getBounds2D(true);
-    minx = r.getX() + 175;
+    minx = r.getX() + r.getBounds2D().getWidth() - 50;
     miny = r.getY();
-    maxx = minx + 20;
+    maxx = r.getX() + r.getBounds2D().getWidth() - 20;
     maxy = miny + 30;
+    
 
     // Get the bounding box of the content
     r = getBounds2D(true);
@@ -102,7 +140,7 @@ public class BoardSprite extends RuleBasedSprite
 
     if ((maxx < minxO) || (minx > maxxO) || (maxy < minyO) || (miny > maxyO))
       retval = false;
-
+    
     return retval;
   }
 }

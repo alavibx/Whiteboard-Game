@@ -10,6 +10,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowListener;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,7 +50,7 @@ import visual.statik.sampled.ContentFactory;
  * @author Behan Alavi, Jonathon Kent, Cayleigh Verhaalen
  * @version 11/13/2018
  */
-public class BernstdhBoard extends JApplication implements KeyListener, MetronomeListener
+public class BernstdhBoard extends JApplication implements KeyListener, MetronomeListener, ComponentListener
 {
   private Content bkgd, bb;
   private JPanel contentPane;
@@ -123,6 +124,7 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
     stage = new Stage(75);
     stage.setBackground(Color.WHITE);
     stageView = stage.getView();
+    stageView.addComponentListener(this);
 
     centerPanel.add(stageView, BorderLayout.CENTER);
     contentPane.add(centerPanel);
@@ -192,9 +194,8 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
 
     if ((keyCode == KeyEvent.VK_ENTER) && isPaused == false && gameStarted == false)
     {
-
       gameStarted = true;
-      board = new Board(stage, mainWindow);
+      board = new Board(stage);
 
       stage.getMetronome().addListener(this);
 
@@ -246,8 +247,36 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
   @Override
   public void handleTick(int arg0)
   {
+    if (board != null)
+      score.setText("SCORE: " + board.getTotalPoints());
+  }
+
+  @Override
+  public void componentHidden(ComponentEvent arg0)
+  {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void componentMoved(ComponentEvent arg0)
+  {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void componentResized(ComponentEvent arg0)
+  {
     // Set the location of the "main screen" to be in the center of the window at all times
-    stage.getView().setLocation((mainWindow.getWidth()-width)/2, (mainWindow.getHeight()-height)/2);
+    stage.getView().setLocation((mainWindow.getWidth() - width)/2, (mainWindow.getHeight() - height)/2);
     stage.repaint();
+  }
+
+  @Override
+  public void componentShown(ComponentEvent arg0)
+  {
+    // TODO Auto-generated method stub
+    
   }
 }
