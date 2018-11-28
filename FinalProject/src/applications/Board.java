@@ -56,8 +56,9 @@ public class Board extends AbstractSprite
   }
 
   /**
+   * Create a random sprite to add to the board.
    * 
-   * @return
+   * @return BoardSprite next random sprite
    */
   public BoardSprite randomSprite()
   {
@@ -92,7 +93,7 @@ public class Board extends AbstractSprite
         contents.get(i).erase();
         
         
-        if (contents.get(i).getOpacity() == 0)
+        if (contents.get(i).getOpacity() <= 0)
         {
           stage.remove(contents.get(i));
           totalPoints += contents.get(i).getPoints();
