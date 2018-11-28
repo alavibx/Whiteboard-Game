@@ -197,7 +197,7 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
   }
 
   /**
-   * 
+   * Person has released key.
    * @param arg0
    */
   public void keyReleased(KeyEvent arg0)
@@ -206,7 +206,7 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
   }
 
   /**
-   * 
+   * Person has pressed on a key.
    * @param arg0
    */
   public void keyTyped(KeyEvent arg0)

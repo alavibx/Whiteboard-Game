@@ -9,6 +9,7 @@ import visual.dynamic.described.Sprite;
 import visual.statik.sampled.TransformableContent;
 
 /**
+ * Class that describes a sprite on the whiteboard.
  * 
  * @author Behan Alavi, Jonathon Kent, Cayleigh Verhaalen
  * @version 11/13/2018
@@ -68,7 +69,7 @@ public class BoardSprite extends RuleBasedSprite
   }
   
   /**
-   * 
+   * Create new X for BoardSprite.
    */
   public void newX()
   {
@@ -76,8 +77,8 @@ public class BoardSprite extends RuleBasedSprite
   }
   
   /**
-   * 
-   * @return
+   * Gets the number of points.
+   * @return points , integer
    */
   public int getPoints()
   {
@@ -85,8 +86,8 @@ public class BoardSprite extends RuleBasedSprite
   }
   
   /**
-   * 
-   * @return
+   * Returns X value of BoardSprite.
+   * @return x , integer
    */
   public int getX()
   {
@@ -94,8 +95,8 @@ public class BoardSprite extends RuleBasedSprite
   }
   
   /**
-   * 
-   * @return
+   * Returns Y value of BoardSprite.
+   * @return y, integer
    */
   public int getY()
   {
@@ -110,7 +111,9 @@ public class BoardSprite extends RuleBasedSprite
   }
   
   /**
+   * Returns true if this BoardSprite intersects with another Sprite.
    * 
+   * @return true if intersects, false otherwise
    */
   public boolean intersects(Sprite s)
   {
@@ -140,9 +143,9 @@ public class BoardSprite extends RuleBasedSprite
   }
 
   /**
-   * 
-   * @param s
-   * @return
+   * Returns boolean depending if this sprite intersects with Bernstein sprite.
+   * @param s a BoardSprite
+   * @return true if instersects with Bernstein, false otherwise
    */
   public boolean intersectsBernstein(Sprite s)
   {
@@ -174,6 +177,9 @@ public class BoardSprite extends RuleBasedSprite
     return retval;
   }
   
+  /**
+   * Erasing effect when Bernstein erases BoardSprite.
+   */
   public void erase()
   {
     opacity -= .25;
@@ -183,11 +189,18 @@ public class BoardSprite extends RuleBasedSprite
     content.setComposite(comp);
   }
   
+  /**
+   * Resets the opacity of the BoardSprite.
+   */
   public void resetOpacity()
   {
     opacity = 1f;
   }
   
+  /**
+   * Returns the opacity of the BoardSprite.
+   * @return
+   */
   public float getOpacity()
   {
     return opacity;
