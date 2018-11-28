@@ -1,44 +1,17 @@
 package applications;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineEvent;
-import javax.sound.sampled.LineListener;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.sound.sampled.*;
+import javax.swing.*;
 
 import app.JApplication;
-import auditory.sampled.BoomBox;
-import auditory.sampled.BufferedSound;
-import auditory.sampled.BufferedSoundFactory;
 import event.MetronomeListener;
 import io.ResourceFinder;
-import visual.Visualization;
 import visual.VisualizationView;
 import visual.dynamic.described.Stage;
 import visual.statik.sampled.Content;
@@ -48,7 +21,7 @@ import visual.statik.sampled.ContentFactory;
  * A game.
  * 
  * @author Behan Alavi, Jonathon Kent, Cayleigh Verhaalen
- * @version 11/13/2018
+ * @version 11/28/2018
  */
 public class BernstdhBoard extends JApplication implements KeyListener, MetronomeListener, ComponentListener
 {
@@ -269,7 +242,7 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
   public void componentResized(ComponentEvent arg0)
   {
     // Set the location of the "main screen" to be in the center of the window at all times
-    stage.getView().setLocation((mainWindow.getWidth() - width)/2, (mainWindow.getHeight() - height)/2);
+    stageView.setLocation((mainWindow.getWidth() - width)/2, (mainWindow.getHeight() - height)/2);
     stage.repaint();
   }
 

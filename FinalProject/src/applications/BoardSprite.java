@@ -1,10 +1,12 @@
 package applications;
 
+import java.awt.AlphaComposite;
+import java.awt.Composite;
 import java.awt.geom.Rectangle2D;
 
 import visual.dynamic.described.RuleBasedSprite;
 import visual.dynamic.described.Sprite;
-import visual.statik.TransformableContent;
+import visual.statik.sampled.TransformableContent;
 
 /**
  * 
@@ -16,11 +18,16 @@ public class BoardSprite extends RuleBasedSprite
   private int x, y;
   private int width, height;
   private int points;
+  private float opacity;
+  private visual.statik.sampled.TransformableContent content;
 
   public BoardSprite(TransformableContent content)
   {
     super(content);
     
+    this.content = content;
+    
+    opacity = 1f;
     points = 0;
     
     // Get the width and height of the content
@@ -60,21 +67,36 @@ public class BoardSprite extends RuleBasedSprite
       points += 25;
   }
   
+  /**
+   * 
+   */
   public void newX()
   {
     x = (int) (Math.random() * (Board.bkgd_width - width));
   }
   
+  /**
+   * 
+   * @return
+   */
   public int getPoints()
   {
     return points;
   }
   
+  /**
+   * 
+   * @return
+   */
   public int getX()
   {
     return x;
   }
   
+  /**
+   * 
+   * @return
+   */
   public int getY()
   {
     return y;
@@ -87,6 +109,9 @@ public class BoardSprite extends RuleBasedSprite
 
   }
   
+  /**
+   * 
+   */
   public boolean intersects(Sprite s)
   {
     boolean          retval;
@@ -114,6 +139,11 @@ public class BoardSprite extends RuleBasedSprite
     return retval;
   }
 
+  /**
+   * 
+   * @param s
+   * @return
+   */
   public boolean intersectsBernstein(Sprite s)
   {
     boolean retval;
@@ -142,5 +172,24 @@ public class BoardSprite extends RuleBasedSprite
       retval = false;
     
     return retval;
+  }
+  
+  public void erase()
+  {
+    opacity -= .25;
+    Composite comp = AlphaComposite.getInstance(
+        AlphaComposite.SRC_OVER,
+        opacity);
+    content.setComposite(comp);
+  }
+  
+  public void resetOpacity()
+  {
+    opacity = 1f;
+  }
+  
+  public float getOpacity()
+  {
+    return opacity;
   }
 }

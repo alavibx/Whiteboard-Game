@@ -2,9 +2,6 @@ package applications;
 
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
-import javax.swing.text.html.HTMLDocument.Iterator;
-
 import io.ResourceFinder;
 import visual.dynamic.described.AbstractSprite;
 import visual.dynamic.described.Stage;
@@ -24,7 +21,7 @@ public class Board extends AbstractSprite
   private Content[] boardContents;
   private Stage stage;
   private int totalPoints;
-  
+
   private ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
   private ContentFactory factory = new ContentFactory(finder);
 
@@ -79,7 +76,9 @@ public class Board extends AbstractSprite
   }
 
   /**
+   * Removes contents from the whiteboard if Bernstein's eraser intersects with them.
    * 
+   * Adds a new random board sprite every 3 seconds.
    */
   public void handleTick(int time)
   {
@@ -89,9 +88,18 @@ public class Board extends AbstractSprite
           && bernstdh.getDirection() == BernsteinSprite.BACK
           && bernstdh.getPosition() == BernsteinSprite.ERASE2)
       {
-        stage.remove(contents.get(i));
-        totalPoints += contents.get(i).getPoints();
-        contents.remove(i);
+        
+        contents.get(i).erase();
+        
+        
+        if (contents.get(i).getOpacity() == 0)
+        {
+          stage.remove(contents.get(i));
+          totalPoints += contents.get(i).getPoints();
+          contents.get(i).resetOpacity();
+          contents.remove(i);
+        }
+          
         stage.repaint();
       }
     }
@@ -103,7 +111,12 @@ public class Board extends AbstractSprite
       stage.add(bernstdh);
     }
   }
-  
+
+  /**
+   * Returns the total number of points obtained.
+   * 
+   * @return totalPoints
+   */
   public int getTotalPoints()
   {
     return totalPoints;
