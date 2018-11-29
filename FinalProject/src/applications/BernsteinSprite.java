@@ -14,14 +14,13 @@ import visual.dynamic.described.*;
  * Bernstein is a Sprite that responds to user interaction.
  *
  * @author Behan Alavi, Jonathon Kent, Cayleigh Verhaalen
- * @version 11/13/2018
+ * @version 11/29/2018
  */
 public class BernsteinSprite extends AbstractSprite implements KeyListener
 {
   private boolean nearLeftEdge, nearRightEdge, nearTop;
   private int jumpTime, xBernstein, yBernstein;
   private int direction, position;
-  private int totalPoints;
   private Content[][] images;
 
   // directions
@@ -243,7 +242,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
       jumpTime -= 150;
 
     // Keep Bernstein from walking off the edge of the screen
-    if (xBernstein > Board.bkgd_width - 175)
+    if (xBernstein > BernstdhBoard.BKGD_WIDTH - 175)
       nearRightEdge = true;
     else
       nearRightEdge = false;

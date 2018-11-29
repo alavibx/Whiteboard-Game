@@ -21,10 +21,13 @@ import visual.statik.sampled.ContentFactory;
  * A game.
  * 
  * @author Behan Alavi, Jonathon Kent, Cayleigh Verhaalen
- * @version 11/28/2018
+ * @version 11/29/2018
  */
 public class BernstdhBoard extends JApplication implements KeyListener, MetronomeListener, ComponentListener
 {
+  public static final int BKGD_WIDTH = 1345;
+  public static final int BKGD_HEIGHT = 880;
+  
   private Content bkgd, bb;
   private JPanel contentPane;
   private boolean isPaused, gameStarted;
@@ -60,7 +63,7 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
    */
   public static void main(String[] args) throws InvocationTargetException, InterruptedException
   {
-    SwingUtilities.invokeAndWait(new BernstdhBoard(1200, 600));
+    SwingUtilities.invokeAndWait(new BernstdhBoard(BKGD_WIDTH - 20, BKGD_HEIGHT + 20));
   }
 
   /**
@@ -79,7 +82,7 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
     mainWindow = (JFrame) SwingUtilities.getWindowAncestor(contentPane);
     mainWindow.setResizable(true);
     mainWindow.setTitle("Bernstdh-Board");
-    mainWindow.setMinimumSize(new Dimension(width, height));
+    mainWindow.setMinimumSize(new Dimension(BKGD_WIDTH, BKGD_HEIGHT));
 
     finder = ResourceFinder.createInstance(resources.Marker.class);
     ContentFactory factory = new ContentFactory(finder);
@@ -96,22 +99,23 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
     centerPanel.setBackground(Color.WHITE);
     stage = new Stage(75);
     stage.setBackground(Color.WHITE);
+    
+    
     stageView = stage.getView();
     stageView.addComponentListener(this);
-
     centerPanel.add(stageView, BorderLayout.CENTER);
     contentPane.add(centerPanel);
 
     // Set the background image
-    bkgd = factory.createContent("background.png", 4);
+    bkgd = factory.createContent("bkgd.png", 4);
     bkgd.setScale(1.0, 1.0);
     bkgd.setLocation(0, 0);
     stage.add(bkgd);
 
     // Add the mainscreen display
-    bb = factory.createContent("bernstdh-mainscreen.png", 4);
-    bb.setScale(1.0, 1.0);
-    bb.setLocation(0, 0);
+    bb = factory.createContent("bernstdh_mainscreen.png", 4);
+    bb.setScale(1.05, 1.05);
+    bb.setLocation(40, 20);
     stage.add(bb);
 
     stage.addKeyListener(this);
@@ -134,7 +138,7 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
     }
 
     // Make the view "visible"
-    stageView.setBounds(0, 0, width, height);
+    stageView.setBounds(0, 0, BKGD_WIDTH, BKGD_HEIGHT);
 
     stage.start();
     isPaused = false;
@@ -242,8 +246,8 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
   public void componentResized(ComponentEvent arg0)
   {
     // Set the location of the "main screen" to be in the center of the window at all times
-    stageView.setLocation((mainWindow.getWidth() - width)/2, (mainWindow.getHeight() - height)/2);
-    stage.repaint();
+    //stageView.setLocation((mainWindow.getWidth() - width)/2, (mainWindow.getHeight() - height)/2);
+    //stage.repaint();
   }
 
   @Override
