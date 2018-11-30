@@ -1,5 +1,7 @@
 package applications;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -9,6 +11,7 @@ import visual.dynamic.described.Stage;
 import visual.statik.TransformableContent;
 import visual.statik.sampled.Content;
 import visual.statik.sampled.ContentFactory;
+import visual.statik.sampled.ImageFactory;
 
 /**
  * 
@@ -19,12 +22,12 @@ public class Board extends AbstractSprite
 {
   private ArrayList<BoardSprite> contents;
   private BernsteinSprite bernstdh;
-  private Content[] boardContents;
+  private BufferedImage[] boardSprites;
   private Stage stage;
   private int totalPoints;
 
   private ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
-  private ContentFactory factory = new ContentFactory(finder);
+  private ImageFactory factory = new ImageFactory(finder);
 
   /**
    * 
@@ -34,7 +37,13 @@ public class Board extends AbstractSprite
   {
     // Get the content images from the files in the resources folder and store them in array
     String[] files = finder.loadResourceNames("content.txt");
-    boardContents = factory.createContents(files, 4);
+    boardSprites = new BufferedImage[files.length];
+    
+    // Store the buffered images of board sprites in an array
+    for (int i = 0; i < files.length; i++)
+    {
+      boardSprites[i] = factory.createBufferedImage(files[i], 4);
+    }
 
     // Get the stage
     this.stage = stage;
@@ -57,18 +66,20 @@ public class Board extends AbstractSprite
   public BoardSprite randomSprite()
   {
     // Get a random index number
-    int randCont = (int) (Math.random() * (boardContents.length - 1));
+    int randCont = (int) (Math.random() * (boardSprites.length - 1));
+    
+    Content c = new Content(boardSprites[randCont], 0, 0);
 
     // Create a random board sprite from the array of contents
-    BoardSprite c = new BoardSprite(boardContents[randCont]);
+    BoardSprite b = new BoardSprite(c);
 
-    c.setLocation(c.getX(), c.getY());
-    c.addAntagonist(bernstdh);
+    b.setLocation(b.getX(), b.getY());
+    b.addAntagonist(bernstdh);
 
     // Add the board sprite to the array list of board-occupying contents
-    contents.add(c);
+    contents.add(b);
 
-    return c;
+    return b;
   }
 
   /**
