@@ -14,7 +14,7 @@ import visual.dynamic.described.*;
  * Bernstein is a Sprite that responds to user interaction.
  *
  * @author Behan Alavi, Jonathon Kent, Cayleigh Verhaalen
- * @version 11/29/2018
+ * @version 11/30/2018
  */
 public class BernsteinSprite extends AbstractSprite implements KeyListener
 {
@@ -34,10 +34,10 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   private static final int DIR3 = 2;
   private static final int DIR4 = 3;
 
+  public static final int UPRIGHT = 4;
+
   public static final int ERASE1 = 0;
   public static final int ERASE2 = 1;
-
-  public static final int UPRIGHT = 4;
 
   private static final int[] SEQUENCE = {DIR1, DIR2, DIR3, DIR4, UPRIGHT};
 
@@ -53,9 +53,11 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
 
     ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
     ContentFactory factory = new ContentFactory(finder);
+
+    // Get images based on number of rows and columns with a transparent background
     images = factory.createContents("bernstein_sprites.png", 3, 5, 4);
     direction = RIGHT;
-    position = 4;
+    position = UPRIGHT;
 
     jumpTime = 0;
 
@@ -146,7 +148,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   }
 
   /**
-   * Handle a FIRE GameButtonEvent.
+   * Handle a FIRE GameButtonEvent. Bernstein performs an "erase" action.
    */
   public void handleFire()
   {
@@ -156,7 +158,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   }
 
   /**
-   * Handle a JUMP GameButtonEvent.
+   * Handle a JUMP GameButtonEvent. Bernstein performs a "jump" action.
    */
   public void handleJump()
   {
@@ -171,7 +173,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   }
 
   /**
-   * Handle a LEFT GameButtonEvent.
+   * Handle a LEFT GameButtonEvent. Berstein "moves" left.
    */
   public void handleLeft()
   {
@@ -191,7 +193,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   }
 
   /**
-   * Handle a RIGHT GameButtonEvent.
+   * Handle a RIGHT GameButtonEvent. Bernstein "moves" right.
    */
   public void handleRight()
   {
@@ -272,7 +274,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   }
 
   /**
-   * Returns the direction number of Bernstein.
+   * Returns the number associated with the direction of Bernstein.
    * 
    * @return Returns the direction of Bernstein
    */
@@ -299,9 +301,9 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
 
     return dir;
   }
-  
+
   /**
-   * Returns the position number of Bernstein.
+   * Returns the number associate with the position of Bernstein.
    * 
    * @return The current position of Bernstein
    */

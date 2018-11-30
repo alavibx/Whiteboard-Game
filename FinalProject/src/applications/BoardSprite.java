@@ -1,45 +1,43 @@
 package applications;
 
-import java.awt.AlphaComposite;
-import java.awt.Composite;
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
 
-import visual.dynamic.described.RuleBasedSprite;
-import visual.dynamic.described.Sprite;
+import visual.dynamic.described.*;
 import visual.statik.sampled.TransformableContent;
 
 /**
  * Class that describes a sprite on the whiteboard.
  * 
  * @author Behan Alavi, Jonathon Kent, Cayleigh Verhaalen
- * @version 11/29/2018
+ * @version 11/30/2018
  */
 public class BoardSprite extends RuleBasedSprite
 {
   private int x, y;
   private int width, height;
   private int points;
-  private float opacity;
+  private float opacity, opacityDecrease;
   private visual.statik.sampled.TransformableContent content;
 
   public BoardSprite(TransformableContent content)
   {
     super(content);
-    
     this.content = content;
-    
+
     opacity = 1f;
+    opacityDecrease = (float) Math.random();
     points = 0;
-    
+
     // Get the width and height of the content
     width = (int) content.getBounds2D(false).getWidth();
     height = (int) content.getBounds2D(false).getHeight();
 
-    // Generate the x of the content randomly across the width of the whiteboard
+    // Generate the x position of the content randomly across the width of the whiteboard
     x = (int) (Math.random() * ((BernstdhBoard.BKGD_WIDTH - 75) - width) + 25);
 
-    // Randomly determine position on whiteboard
+    // Randomly determine the y position on whiteboard
     // Contents higher up on the board are worth more
     if (Math.round(Math.random()) == 0)
     {
@@ -50,7 +48,21 @@ public class BoardSprite extends RuleBasedSprite
       y = 175;
       points += 100;
     }
-    
+
+    // Increase point value depending on opacityDecrease
+    if (opacityDecrease < 0.05)
+      points += 300;
+    else if (opacityDecrease < 0.1)
+      points += 250;
+    else if (opacityDecrease < 0.25)
+      points += 200;
+    else if (opacityDecrease < 0.5)
+      points += 150;
+    else if (opacityDecrease < 0.75)
+      points += 100;
+    else
+      points += 50;
+
     // Increase point value depending on width of content
     if (width >= 400)
       points += 200;
@@ -83,7 +95,7 @@ public class BoardSprite extends RuleBasedSprite
   /**
    * Gets the number of points.
    * 
-   * @return points , integer
+   * @return points content is worth
    */
   public int getPoints()
   {
@@ -115,18 +127,14 @@ public class BoardSprite extends RuleBasedSprite
   {
     Iterator<Sprite> i = antagonists.iterator();
     Sprite bernstdh;
-    
+
     while (i.hasNext())
     {
       bernstdh = i.next();
-      if (intersectsBernstein(bernstdh)
-          && ((BernsteinSprite) bernstdh).getDirection() == BernsteinSprite.BACK
-          && ((BernsteinSprite) bernstdh).getPosition() == BernsteinSprite.ERASE2)
+
+      if (intersectsBernstein(bernstdh) && opacity > 0)
       {
-        if (opacity > 0)
-          erase();
-        if (opacity < 0)
-          opacity = 0;
+        erase();
       }
     }
   }
@@ -196,7 +204,9 @@ public class BoardSprite extends RuleBasedSprite
     if ((maxx < minxO) || (minx > maxxO) || (maxy < minyO) || (miny > maxyO))
       retval = false;
 
-    return retval;
+    // If the necessary bounding boxes intersect and the Bernstein sprite is in the correct position
+    return retval && (((BernsteinSprite) s).getDirection() == BernsteinSprite.BACK
+        && ((BernsteinSprite) s).getPosition() == BernsteinSprite.ERASE2);
   }
 
   /**
@@ -204,7 +214,11 @@ public class BoardSprite extends RuleBasedSprite
    */
   public void erase()
   {
-    opacity -= .25;
+    opacity -= opacityDecrease;
+
+    if (opacity < 0)
+      opacity = 0;
+
     Composite comp = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity);
     content.setComposite(comp);
   }
