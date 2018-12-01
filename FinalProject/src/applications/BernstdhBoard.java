@@ -192,31 +192,39 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
       }
       else
       {
-        score.setText("WELCOME TO ISAT 236");
-        
-        board.setVisible(false);
-        stage.remove(board);
-        board = null;
-        stage.repaint();
-        
-        gameClip.stop();
-        mainClip.start();
-        
-        gameStarted = false;
+        endGame();
         
         toMainMenu();
       }
     }
   }
+  
+  /**
+   * Ends the current game and returns to the main menu.
+   */
+  public void endGame()
+  {
+    board.setVisible(false);
+    stage.remove(board);
+    board = null;
+    
+    gameClip.stop();
+    mainClip.start();
+    
+    gameStarted = false;
+  }
 
   public void toMainMenu()
   {
+    score.setText("WELCOME TO ISAT 236");
+    
     stage.clear();
     stage.add(bkgd);
     stage.add(main);
 
-    stage.remove(help);
-    stage.remove(about);
+    //stage.remove(help);
+    //stage.remove(about);
+    
   }
 
   /**
