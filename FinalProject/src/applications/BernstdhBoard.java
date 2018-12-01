@@ -30,7 +30,7 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
 
   private Content bkgd, main, help, about;
   private JPanel contentPane;
-  private boolean isPaused, gameStarted;
+  private boolean isPaused, gameStarted, replay;
   private JLabel score;
   private Board board;
   private JFrame mainWindow;
@@ -84,7 +84,7 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
     mainWindow.setTitle("Bernstdh-Board");
     mainWindow.setMinimumSize(new Dimension(BKGD_WIDTH, BKGD_HEIGHT));
 
-    finder = ResourceFinder.createInstance(resources.Marker.class);    
+    finder = ResourceFinder.createInstance(resources.Marker.class);
 
     JPanel topPanel = new JPanel(new GridLayout(0, 1));
     topPanel.setBackground(Color.WHITE);
@@ -102,7 +102,7 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
     stageView = stage.getView();
     centerPanel.add(stageView, BorderLayout.CENTER);
     contentPane.add(centerPanel);
-    
+
     setImages();
 
     stage.addKeyListener(this);
@@ -130,12 +130,13 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
     stage.start();
     isPaused = false;
     gameStarted = false;
+    replay = false;
   }
 
   public void setImages()
   {
     ContentFactory factory = new ContentFactory(finder);
-    
+
     // Set the background image
     bkgd = factory.createContent("bkgd.png", 4);
     bkgd.setScale(1.0, 1.0);
@@ -147,11 +148,11 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
     main.setScale(1.0, 1.0);
     main.setLocation(0, 0);
     stage.add(main);
-    
+
     help = factory.createContent("helpdescription.png", 4);
     help.setScale(1.0);
     help.setLocation(0, 0);
-    
+
     about = factory.createContent("aboutdescription.png", 4);
     about.setScale(1.0);
     about.setLocation(0, 0);
@@ -193,12 +194,10 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
       else
       {
         endGame();
-        
-        toMainMenu();
       }
     }
   }
-  
+
   /**
    * Ends the current game and returns to the main menu.
    */
@@ -207,24 +206,27 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
     board.setVisible(false);
     stage.remove(board);
     board = null;
-    
+
     gameClip.stop();
     mainClip.start();
-    
+
     gameStarted = false;
+    
+    toMainMenu();
   }
 
   public void toMainMenu()
   {
+
     score.setText("WELCOME TO ISAT 236");
-    
+
     stage.clear();
     stage.add(bkgd);
     stage.add(main);
 
-    //stage.remove(help);
-    //stage.remove(about);
-    
+    // stage.remove(help);
+    // stage.remove(about);
+
   }
 
   /**
@@ -261,6 +263,15 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
 
     stage.getMetronome().addListener(this);
 
+    if (!replay)
+      initializeGameMusic();
+
+    stage.remove(main);
+    stage.add(board);
+  }
+
+  public void initializeGameMusic()
+  {
     // Play game music, if the file is available. Otherwise, continue with no music.
     try
     {
@@ -278,9 +289,6 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
     {
       // Do nothing
     }
-
-    stage.remove(main);
-    stage.add(board);
   }
 
   /**
@@ -290,7 +298,28 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
   public void handleTick(int arg0)
   {
     if (board != null)
+    {
+
       score.setText("SCORE: " + board.getTotalPoints());
+
+      if (board.gameWon())
+      {
+        stage.stop();
+
+        int dialogRes = JOptionPane.showConfirmDialog(contentPane,
+            "You won!\n Would you like to play again?");
+
+        if (dialogRes == JOptionPane.YES_OPTION)
+        {
+          endGame();
+        }
+        else if (dialogRes == JOptionPane.NO_OPTION)
+        {
+          System.exit(0);
+        }
+      }
+    }
+
   }
 
   /*

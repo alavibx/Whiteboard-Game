@@ -25,6 +25,7 @@ public class Board extends AbstractSprite
   private BufferedImage[] boardSprites;
   private Stage stage;
   private int totalPoints;
+  private boolean gameWon;
 
   private ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
   private ImageFactory factory = new ImageFactory(finder);
@@ -56,6 +57,8 @@ public class Board extends AbstractSprite
 
     // Initialize an arraylist to hold all of the contents that occupy the board
     contents = new ArrayList<BoardSprite>();
+    
+    gameWon = false;
   }
 
   /**
@@ -109,6 +112,12 @@ public class Board extends AbstractSprite
       stage.remove(bernstdh);
       stage.add(bernstdh);
     }
+    
+    if (totalPoints >= 500)
+    {
+      gameWon = true;
+    }
+    
   }
 
   /**
@@ -125,5 +134,10 @@ public class Board extends AbstractSprite
   protected TransformableContent getContent()
   {
     return randomSprite();
+  }
+  
+  public boolean gameWon()
+  {
+    return gameWon;
   }
 }
