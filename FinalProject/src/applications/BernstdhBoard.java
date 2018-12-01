@@ -23,12 +23,12 @@ import visual.statik.sampled.ContentFactory;
  * @author Behan Alavi, Jonathon Kent, Cayleigh Verhaalen
  * @version 11/29/2018
  */
-public class BernstdhBoard extends JApplication implements KeyListener, MetronomeListener, ComponentListener
+public class BernstdhBoard extends JApplication implements KeyListener, MetronomeListener
 {
   public static final int BKGD_WIDTH = 1345;
   public static final int BKGD_HEIGHT = 880;
-  
-  private Content bkgd, bb;
+
+  private Content bkgd, main, help, about;
   private JPanel contentPane;
   private boolean isPaused, gameStarted;
   private JLabel score;
@@ -84,8 +84,7 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
     mainWindow.setTitle("Bernstdh-Board");
     mainWindow.setMinimumSize(new Dimension(BKGD_WIDTH, BKGD_HEIGHT));
 
-    finder = ResourceFinder.createInstance(resources.Marker.class);
-    ContentFactory factory = new ContentFactory(finder);
+    finder = ResourceFinder.createInstance(resources.Marker.class);    
 
     JPanel topPanel = new JPanel(new GridLayout(0, 1));
     topPanel.setBackground(Color.WHITE);
@@ -99,24 +98,12 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
     centerPanel.setBackground(Color.WHITE);
     stage = new Stage(75);
     stage.setBackground(Color.WHITE);
-    
-    
+
     stageView = stage.getView();
-    stageView.addComponentListener(this);
     centerPanel.add(stageView, BorderLayout.CENTER);
     contentPane.add(centerPanel);
-
-    // Set the background image
-    bkgd = factory.createContent("bkgd.png", 4);
-    bkgd.setScale(1.0, 1.0);
-    bkgd.setLocation(0, 0);
-    stage.add(bkgd);
-
-    // Add the mainscreen display
-    bb = factory.createContent("bernstdh_mainscreen.png", 4);
-    bb.setScale(1.05, 1.05);
-    bb.setLocation(40, 20);
-    stage.add(bb);
+    
+    setImages();
 
     stage.addKeyListener(this);
     stage.getMetronome().addListener(this);
@@ -145,6 +132,31 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
     gameStarted = false;
   }
 
+  public void setImages()
+  {
+    ContentFactory factory = new ContentFactory(finder);
+    
+    // Set the background image
+    bkgd = factory.createContent("bkgd.png", 4);
+    bkgd.setScale(1.0, 1.0);
+    bkgd.setLocation(0, 0);
+    stage.add(bkgd);
+
+    // Add the mainscreen display
+    main = factory.createContent("mainscreen.png", 4);
+    main.setScale(1.0, 1.0);
+    main.setLocation(0, 0);
+    stage.add(main);
+    
+    help = factory.createContent("helpdescription.png", 4);
+    help.setScale(1.0);
+    help.setLocation(0, 0);
+    
+    about = factory.createContent("aboutdescription.png", 4);
+    about.setScale(1.0);
+    about.setLocation(0, 0);
+  }
+
   /**
    * Responds to events when the "Enter" key is pressed. Different events occur under different
    * conditions.
@@ -157,63 +169,110 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
     int keyCode;
     keyCode = ke.getKeyCode();
 
-    if ((keyCode == KeyEvent.VK_ENTER) && isPaused == false && gameStarted == true)
+    if ((keyCode == KeyEvent.VK_SHIFT) && !isPaused && gameStarted)
     {
-      stage.stop();
-      isPaused = true;
+      pauseGame();
     }
 
-    if ((keyCode == KeyEvent.VK_ENTER) && isPaused == true && gameStarted == true)
+    if ((keyCode == KeyEvent.VK_SHIFT) && isPaused && gameStarted)
     {
-      stage.start();
-      isPaused = false;
+      resumeGame();
     }
 
-    if ((keyCode == KeyEvent.VK_ENTER) && isPaused == false && gameStarted == false)
+    if ((keyCode == KeyEvent.VK_SHIFT) && !isPaused && !gameStarted)
     {
-      gameStarted = true;
-      board = new Board(stage);
+      startGame();
+    }
 
-      stage.getMetronome().addListener(this);
-
-      // Play game music, if the file is available. Otherwise, continue with no music.
-      try
+    if ((keyCode == KeyEvent.VK_BACK_SPACE))
+    {
+      if (!gameStarted)
       {
-        BufferedInputStream bis = new BufferedInputStream(finder.findInputStream("game.wav"));
-        AudioInputStream ais = AudioSystem.getAudioInputStream(bis);
-        gameClip = AudioSystem.getClip();
-        gameClip.open(ais);
-        gameClip.start();
-
-        mainClip.stop();
-        mainClip.close();
-
-        gameClip.loop(Clip.LOOP_CONTINUOUSLY);
+        toMainMenu();
       }
-      catch (IOException | UnsupportedAudioFileException | LineUnavailableException e)
+      else
       {
-        // Do nothing
+        score.setText("WELCOME TO ISAT 236");
+        
+        board.setVisible(false);
+        stage.remove(board);
+        board = null;
+        stage.repaint();
+        
+        gameClip.stop();
+        mainClip.start();
+        
+        gameStarted = false;
+        
+        toMainMenu();
       }
-
-      stage.remove(bb);
-      stage.add(board);
     }
   }
 
-  /**
-   * Person has released key.
-   * @param arg0
-   */
-  public void keyReleased(KeyEvent arg0)
+  public void toMainMenu()
   {
+    stage.clear();
+    stage.add(bkgd);
+    stage.add(main);
+
+    stage.remove(help);
+    stage.remove(about);
   }
 
   /**
-   * Person has pressed on a key.
-   * @param arg0
+   * Helper method for SHIFT KEY event.
+   * 
+   * Pauses the game.
    */
-  public void keyTyped(KeyEvent arg0)
+  public void pauseGame()
   {
+    stage.stop();
+    isPaused = true;
+  }
+
+  /**
+   * Helper method for SHIFT KEY event.
+   * 
+   * Resumes the game.
+   */
+  public void resumeGame()
+  {
+    stage.start();
+    isPaused = false;
+  }
+
+  /**
+   * Helper method for SHIFT KEY event.
+   * 
+   * Starts the game.
+   */
+  public void startGame()
+  {
+    gameStarted = true;
+    board = new Board(stage);
+
+    stage.getMetronome().addListener(this);
+
+    // Play game music, if the file is available. Otherwise, continue with no music.
+    try
+    {
+      BufferedInputStream bis = new BufferedInputStream(finder.findInputStream("game.wav"));
+      AudioInputStream ais = AudioSystem.getAudioInputStream(bis);
+      gameClip = AudioSystem.getClip();
+      gameClip.open(ais);
+      gameClip.start();
+
+      mainClip.stop();
+
+      gameClip.loop(Clip.LOOP_CONTINUOUSLY);
+    }
+    catch (IOException | UnsupportedAudioFileException | LineUnavailableException e)
+    {
+      // Do nothing
+    }
+
+    stage.remove(main);
+    stage.add(board);
   }
 
   /**
@@ -226,26 +285,29 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
       score.setText("SCORE: " + board.getTotalPoints());
   }
 
-  @Override
-  public void componentHidden(ComponentEvent arg0)
+  /*
+   * 
+   * 
+   * *********************** UNUSED METHODS - NEEDED FOR INTERFACES ***********************
+   * 
+   * 
+   */
+
+  /**
+   * Person has released key.
+   * 
+   * @param arg0
+   */
+  public void keyReleased(KeyEvent arg0)
   {
   }
 
-  @Override
-  public void componentMoved(ComponentEvent arg0)
-  {
-  }
-
-  @Override
-  public void componentResized(ComponentEvent arg0)
-  {
-    // Set the location of the "main screen" to be in the center of the window at all times
-    //stageView.setLocation((mainWindow.getWidth() - width)/2, (mainWindow.getHeight() - height)/2);
-    //stage.repaint();
-  }
-
-  @Override
-  public void componentShown(ComponentEvent arg0)
+  /**
+   * Person has pressed on a key.
+   * 
+   * @param arg0
+   */
+  public void keyTyped(KeyEvent arg0)
   {
   }
 }
