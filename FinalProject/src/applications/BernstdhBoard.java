@@ -242,6 +242,14 @@ public class BernstdhBoard extends JApplication
     // Handle the PAUSE, RESUME, and PLAY
     if ((keyCode == KeyEvent.VK_SPACE))
     {
+      playPressed = true;
+      pausePressed = false;
+      
+      stage.add(playButton[0]);
+      stage.add(playButton[1]);
+      stage.add(playButton[2]);
+      stage.add(playButton[3]);
+      
       if (!isPaused && gameStarted)
         pauseGame();
       else if (isPaused && gameStarted)
@@ -300,19 +308,19 @@ public class BernstdhBoard extends JApplication
     int x = me.getX();
     int y = me.getY();
 
-    double helpX, helpY, helpW, helpH;
     double playX, playY, playW, playH;
+    double helpX, helpY, helpW, helpH;
     double aboutX, aboutY, aboutW, aboutH;
-
-    helpX = helpButton[3].getBounds2D().getX();
-    helpY = helpButton[3].getBounds2D().getY();
-    helpW = helpButton[3].getBounds2D().getWidth();
-    helpH = helpButton[3].getBounds2D().getHeight();
 
     playX = playButton[1].getBounds2D().getX();
     playY = playButton[1].getBounds2D().getY();
     playW = playButton[1].getBounds2D().getWidth();
     playH = playButton[1].getBounds2D().getHeight();
+    
+    helpX = helpButton[3].getBounds2D().getX();
+    helpY = helpButton[3].getBounds2D().getY();
+    helpW = helpButton[3].getBounds2D().getWidth();
+    helpH = helpButton[3].getBounds2D().getHeight();
 
     aboutX = aboutButton[1].getBounds2D().getX();
     aboutY = aboutButton[1].getBounds2D().getY();
@@ -778,24 +786,6 @@ public class BernstdhBoard extends JApplication
     else if (gameStarted && isPaused)
       resumeGame();
   }
-  
-  /**
-   * Helper method for RETURN.
-   */
-  public void returnHandler()
-  {
-    
-    
-   /* gameStarted = false;
-    playPressed = false;
-    pausePressed = true;
-    aboutPressed = false;
-    returnAPressed = true;
-    helpPressed = false;
-    returnHPressed = true;*/
-    
-    //showButtons();
-  }
 
   /**
    * Responds to events when the mouse is released. Different events occur under different
@@ -875,11 +865,11 @@ public class BernstdhBoard extends JApplication
   }
 
   /*
-   * 
-   * 
+   * **************************************************************************************
+   * **************************************************************************************
    * *********************** UNUSED METHODS - NEEDED FOR INTERFACES ***********************
-   * 
-   * 
+   * **************************************************************************************
+   * **************************************************************************************
    */
 
   /**
