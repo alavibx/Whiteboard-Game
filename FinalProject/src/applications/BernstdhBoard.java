@@ -170,17 +170,17 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
     int keyCode;
     keyCode = ke.getKeyCode();
 
-    if ((keyCode == KeyEvent.VK_SHIFT) && !isPaused && gameStarted)
+    if ((keyCode == KeyEvent.VK_SPACE) && !isPaused && gameStarted)
     {
       pauseGame();
     }
 
-    if ((keyCode == KeyEvent.VK_SHIFT) && isPaused && gameStarted)
+    if ((keyCode == KeyEvent.VK_SPACE) && isPaused && gameStarted)
     {
       resumeGame();
     }
 
-    if ((keyCode == KeyEvent.VK_SHIFT) && !isPaused && !gameStarted)
+    if ((keyCode == KeyEvent.VK_SPACE) && !isPaused && !gameStarted)
     {
       startGame();
     }
@@ -211,18 +211,20 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
     mainClip.start();
 
     gameStarted = false;
+    isPaused = false;
     
     toMainMenu();
   }
 
   public void toMainMenu()
   {
-
     score.setText("WELCOME TO ISAT 236");
 
     stage.clear();
     stage.add(bkgd);
     stage.add(main);
+    
+    stage.start();
 
     // stage.remove(help);
     // stage.remove(about);
@@ -308,6 +310,23 @@ public class BernstdhBoard extends JApplication implements KeyListener, Metronom
 
         int dialogRes = JOptionPane.showConfirmDialog(contentPane,
             "You won!\n Would you like to play again?");
+
+        if (dialogRes == JOptionPane.YES_OPTION)
+        {
+          endGame();
+        }
+        else if (dialogRes == JOptionPane.NO_OPTION)
+        {
+          System.exit(0);
+        }
+      }
+      
+      if (board.gameLost())
+      {
+        stage.stop();
+
+        int dialogRes = JOptionPane.showConfirmDialog(contentPane,
+            "You lost!\n Would you like to play again?");
 
         if (dialogRes == JOptionPane.YES_OPTION)
         {

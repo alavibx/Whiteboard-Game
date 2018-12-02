@@ -82,7 +82,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
       handleLeft();
     else if ((keyCode == KeyEvent.VK_KP_UP) || (keyCode == KeyEvent.VK_UP))
       handleJump();
-    else if (keyCode == KeyEvent.VK_SPACE)
+    else if (keyCode == KeyEvent.VK_SHIFT)
     {
       handleFire();
     }

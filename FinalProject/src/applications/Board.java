@@ -1,7 +1,6 @@
 package applications;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -10,7 +9,6 @@ import visual.dynamic.described.AbstractSprite;
 import visual.dynamic.described.Stage;
 import visual.statik.TransformableContent;
 import visual.statik.sampled.Content;
-import visual.statik.sampled.ContentFactory;
 import visual.statik.sampled.ImageFactory;
 
 /**
@@ -24,8 +22,8 @@ public class Board extends AbstractSprite
   private BernsteinSprite bernstdh;
   private BufferedImage[] boardSprites;
   private Stage stage;
-  private int totalPoints;
-  private boolean gameWon;
+  private int totalPoints, speed, decrementSpeed;
+  private boolean gameWon,gameLost;
 
   private ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
   private ImageFactory factory = new ImageFactory(finder);
@@ -58,7 +56,11 @@ public class Board extends AbstractSprite
     // Initialize an arraylist to hold all of the contents that occupy the board
     contents = new ArrayList<BoardSprite>();
     
+    decrementSpeed = 75;
+    speed = 3075; // 3 seconds
+    
     gameWon = false;
+    gameLost = false;
   }
 
   /**
@@ -92,8 +94,6 @@ public class Board extends AbstractSprite
    */
   public void handleTick(int time)
   {
-    Iterator<BoardSprite> it = contents.iterator();
-
     for (int i = 0; i < contents.size(); i++)
     {
       // If the content has completely disappeared, remove it from the stage and the array list
@@ -105,17 +105,33 @@ public class Board extends AbstractSprite
         contents.remove(i);
       }
     }
-
-    if (time % 3000 == 0)
+    
+    if (time % speed == 0)
     {
       stage.add(randomSprite());
       stage.remove(bernstdh);
       stage.add(bernstdh);
     }
     
-    if (totalPoints >= 500)
+    
+    if (time % 3075 == 0 && contents.size() > 0)
+    {
+      if (speed > 300)
+      {
+        speed -= decrementSpeed;
+      }
+      else
+        speed = 300;
+    }
+    
+    if (totalPoints >= 100000)
     {
       gameWon = true;
+    }
+    
+    if (contents.size() > 15)
+    {
+      gameLost = true;
     }
     
   }
@@ -139,5 +155,10 @@ public class Board extends AbstractSprite
   public boolean gameWon()
   {
     return gameWon;
+  }
+  
+  public boolean gameLost()
+  {
+    return gameLost;
   }
 }
