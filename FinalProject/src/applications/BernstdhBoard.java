@@ -444,12 +444,15 @@ public class BernstdhBoard extends JApplication
     stage.add(bkgd);
     stage.add(main);
 
-    showButtons();
-
     aboutDisplayed = false;
     helpDisplayed = false;
     gameStarted = false;
     isPaused = false;
+    
+    playPressed = false;
+    pausePressed = true;
+    
+    showButtons();
   }
 
   /**
@@ -465,6 +468,13 @@ public class BernstdhBoard extends JApplication
 
     helpDisplayed = true;
     aboutDisplayed = false;
+    
+    playPressed = false;
+    pausePressed = true;
+    helpPressed = true;
+    returnHPressed = false;
+    aboutPressed = false;
+    returnAPressed = true;
 
     if (gameStarted)
       isPaused = true;
@@ -483,6 +493,13 @@ public class BernstdhBoard extends JApplication
 
     helpDisplayed = false;
     aboutDisplayed = true;
+    
+    playPressed = false;
+    pausePressed = true;
+    helpPressed = false;
+    returnHPressed = true;
+    aboutPressed = true;
+    returnAPressed = false;
 
     if (gameStarted)
       isPaused = true;
