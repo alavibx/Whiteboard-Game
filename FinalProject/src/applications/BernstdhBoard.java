@@ -242,7 +242,12 @@ public class BernstdhBoard extends JApplication
     // Handle the PAUSE, RESUME, and PLAY
     if ((keyCode == KeyEvent.VK_SPACE))
     {
-      playHandler();
+      if (!isPaused && gameStarted)
+        pauseGame();
+      else if (isPaused && gameStarted)
+        resumeGame();
+      else if (!isPaused && !gameStarted)
+        startGame();
     }
 
     // Handle the HELP menu
@@ -260,6 +265,13 @@ public class BernstdhBoard extends JApplication
     // Handle the RETURN from a menu or the game
     if ((keyCode == KeyEvent.VK_BACK_SPACE))
     {
+      playPressed = false;
+      pausePressed = true;
+      helpPressed = false;
+      returnHPressed = true;
+      aboutPressed = false;
+      returnAPressed = true;
+      
       if (!gameStarted)
       {
         showMainMenu();
@@ -288,19 +300,19 @@ public class BernstdhBoard extends JApplication
     int x = me.getX();
     int y = me.getY();
 
-    double playX, playY, playW, playH;
     double helpX, helpY, helpW, helpH;
+    double playX, playY, playW, playH;
     double aboutX, aboutY, aboutW, aboutH;
-
-    playX = playButton[1].getBounds2D().getX();
-    playY = playButton[1].getBounds2D().getY();
-    playW = playButton[1].getBounds2D().getWidth();
-    playH = playButton[1].getBounds2D().getHeight();
 
     helpX = helpButton[3].getBounds2D().getX();
     helpY = helpButton[3].getBounds2D().getY();
     helpW = helpButton[3].getBounds2D().getWidth();
     helpH = helpButton[3].getBounds2D().getHeight();
+
+    playX = playButton[1].getBounds2D().getX();
+    playY = playButton[1].getBounds2D().getY();
+    playW = playButton[1].getBounds2D().getWidth();
+    playH = playButton[1].getBounds2D().getHeight();
 
     aboutX = aboutButton[1].getBounds2D().getX();
     aboutY = aboutButton[1].getBounds2D().getY();
@@ -310,18 +322,90 @@ public class BernstdhBoard extends JApplication
     // Handle PLAY when PRESSED
     if (x >= playX && x <= playX + playW && y >= playY && y <= playY + playH)
     {
+      if (!playPressed && pausePressed)
+      {
+        stage.add(playButton[0]);
+        stage.add(playButton[1]);
+        stage.add(playButton[2]);
+        stage.remove(playButton[3]);
+
+        playPressed = true;
+        pausePressed = false;
+        
+        helpPressed = false;
+        returnHPressed = true;
+        
+        aboutPressed = false;
+        returnAPressed = true;
+      }
+      else if (!playPressed && !pausePressed)
+      {
+        stage.add(playButton[0]);
+        stage.remove(playButton[1]);
+        stage.remove(playButton[2]);
+        stage.remove(playButton[3]);
+      }
+
       playHandler();
     }
 
     // Handle HELP MENU when PRESSED
     if (x >= helpX && x <= helpX + helpW && y >= helpY && y <= helpY + helpH)
     {
+      if (!helpPressed && returnHPressed)
+      {
+        stage.add(helpButton[0]);
+        stage.add(helpButton[1]);
+        stage.add(helpButton[2]);
+        stage.remove(helpButton[3]);
+
+        helpPressed = true;
+        returnHPressed = false;
+        
+        aboutPressed = false;
+        returnAPressed = true;
+        
+        playPressed = false;
+        pausePressed = true;
+      }
+      else if (!helpPressed && !returnHPressed)
+      {
+        stage.add(helpButton[0]);
+        stage.remove(helpButton[1]);
+        stage.remove(helpButton[2]);
+        stage.remove(helpButton[3]);
+      }
+
       helpHandler();
     }
 
     // Handle ABOUT MENU when PRESSED
     if (x >= aboutX && x <= aboutX + aboutW && y >= aboutY && y <= aboutY + aboutH)
     {
+      if (!aboutPressed && returnAPressed)
+      {
+        stage.add(aboutButton[0]);
+        stage.add(aboutButton[1]);
+        stage.add(aboutButton[2]);
+        stage.remove(aboutButton[3]);
+
+        aboutPressed = true;
+        returnAPressed = false;
+        
+        helpPressed = false;
+        returnHPressed = true;
+        
+        playPressed = false;
+        pausePressed = true;
+      }
+      else if (!aboutPressed && !returnAPressed)
+      {
+        stage.add(aboutButton[0]);
+        stage.remove(aboutButton[1]);
+        stage.remove(aboutButton[2]);
+        stage.remove(aboutButton[3]);
+      }
+
       aboutHandler();
     }
   }
@@ -352,19 +436,12 @@ public class BernstdhBoard extends JApplication
     stage.add(bkgd);
     stage.add(main);
 
+    showButtons();
+
     aboutDisplayed = false;
     helpDisplayed = false;
     gameStarted = false;
     isPaused = false;
-
-    playPressed = false;
-    pausePressed = true;
-    aboutPressed = false;
-    returnAPressed = true;
-    helpPressed = false;
-    returnHPressed = true;
-
-    showButtons();
   }
 
   /**
@@ -381,17 +458,8 @@ public class BernstdhBoard extends JApplication
     helpDisplayed = true;
     aboutDisplayed = false;
 
-    helpPressed = true;
-    returnHPressed = false;
-    aboutPressed = false;
-    returnAPressed = true;
-
     if (gameStarted)
-    {
       isPaused = true;
-      playPressed = true;
-      pausePressed = false;
-    }
   }
 
   /**
@@ -408,17 +476,8 @@ public class BernstdhBoard extends JApplication
     helpDisplayed = false;
     aboutDisplayed = true;
 
-    helpPressed = false;
-    returnHPressed = true;
-    aboutPressed = true;
-    returnAPressed = false;
-
     if (gameStarted)
-    {
       isPaused = true;
-      playPressed = true;
-      pausePressed = false;
-    }
   }
 
   public void showButtons()
@@ -514,8 +573,6 @@ public class BernstdhBoard extends JApplication
     }
 
     isPaused = true;
-    pausePressed = true;
-    playPressed = false;
   }
 
   /**
@@ -544,13 +601,6 @@ public class BernstdhBoard extends JApplication
     isPaused = false;
     helpDisplayed = false;
     aboutDisplayed = false;
-
-    playPressed = true;
-    pausePressed = false;
-    helpPressed = false;
-    returnHPressed = true;
-    aboutPressed = false;
-    returnAPressed = true;
   }
 
   /**
@@ -667,30 +717,6 @@ public class BernstdhBoard extends JApplication
    */
   public void aboutHandler()
   {
-    if (!aboutPressed && returnAPressed)
-    {
-      stage.add(aboutButton[0]);
-      stage.add(aboutButton[1]);
-      stage.add(aboutButton[2]);
-      stage.remove(aboutButton[3]);
-
-      aboutPressed = true;
-      returnAPressed = false;
-
-      helpPressed = false;
-      returnHPressed = true;
-
-      playPressed = false;
-      pausePressed = true;
-    }
-    else if (!aboutPressed && !returnAPressed)
-    {
-      stage.add(aboutButton[0]);
-      stage.remove(aboutButton[1]);
-      stage.remove(aboutButton[2]);
-      stage.remove(aboutButton[3]);
-    }
-    
     if (aboutDisplayed && !gameStarted)
     {
       showMainMenu();
@@ -718,30 +744,6 @@ public class BernstdhBoard extends JApplication
    */
   public void helpHandler()
   {
-    if (!helpPressed && returnHPressed)
-    {
-      stage.add(helpButton[0]);
-      stage.add(helpButton[1]);
-      stage.add(helpButton[2]);
-      stage.remove(helpButton[3]);
-
-      helpPressed = true;
-      returnHPressed = false;
-
-      aboutPressed = false;
-      returnAPressed = true;
-
-      playPressed = false;
-      pausePressed = true;
-    }
-    else if (!helpPressed && !returnHPressed)
-    {
-      stage.add(helpButton[0]);
-      stage.remove(helpButton[1]);
-      stage.remove(helpButton[2]);
-      stage.remove(helpButton[3]);
-    }
-    
     if (helpDisplayed && !gameStarted)
     {
       showMainMenu();
@@ -763,36 +765,12 @@ public class BernstdhBoard extends JApplication
       showHelpMenu();
     }
   }
-
+  
   /**
    * Helper method for PLAY.
    */
   public void playHandler()
   {
-    if (!playPressed && pausePressed)
-    {
-      stage.add(playButton[0]);
-      stage.add(playButton[1]);
-      stage.add(playButton[2]);
-      stage.remove(playButton[3]);
-
-      playPressed = true;
-      pausePressed = false;
-
-      helpPressed = false;
-      returnHPressed = true;
-
-      aboutPressed = false;
-      returnAPressed = true;
-    }
-    else if (!playPressed && !pausePressed)
-    {
-      stage.add(playButton[0]);
-      stage.remove(playButton[1]);
-      stage.remove(playButton[2]);
-      stage.remove(playButton[3]);
-    }
-
     if (!gameStarted && !isPaused)
       startGame();
     else if (gameStarted && !isPaused)
@@ -800,19 +778,23 @@ public class BernstdhBoard extends JApplication
     else if (gameStarted && isPaused)
       resumeGame();
   }
-
+  
   /**
    * Helper method for RETURN.
    */
   public void returnHandler()
   {
-
-    /*
-     * gameStarted = false; playPressed = false; pausePressed = true; aboutPressed = false;
-     * returnAPressed = true; helpPressed = false; returnHPressed = true;
-     */
-
-    // showButtons();
+    
+    
+   /* gameStarted = false;
+    playPressed = false;
+    pausePressed = true;
+    aboutPressed = false;
+    returnAPressed = true;
+    helpPressed = false;
+    returnHPressed = true;*/
+    
+    //showButtons();
   }
 
   /**
@@ -907,65 +889,6 @@ public class BernstdhBoard extends JApplication
    */
   public void keyReleased(KeyEvent arg0)
   {
-    // Handle SPACE PLAY when RELEASED
-    if (playPressed && !pausePressed)
-    {
-      stage.add(playButton[0]);
-      stage.add(playButton[1]);
-      stage.remove(playButton[2]);
-      stage.remove(playButton[3]);
-    }
-    else if (!playPressed && pausePressed)
-    {
-      stage.add(playButton[0]);
-      stage.add(playButton[1]);
-      stage.add(playButton[2]);
-      stage.add(playButton[3]);
-    }
-
-    // Handle CTRL HELP MENU when RELEASED
-    if (helpPressed && !returnHPressed)
-    {
-      stage.add(helpButton[0]);
-      stage.add(helpButton[1]);
-      stage.remove(helpButton[2]);
-      stage.remove(helpButton[3]);
-
-      helpPressed = false;
-      returnHPressed = false;
-    }
-    else if (!helpPressed && !returnHPressed)
-    {
-      stage.add(helpButton[0]);
-      stage.add(helpButton[1]);
-      stage.add(helpButton[2]);
-      stage.add(helpButton[3]);
-
-      helpPressed = false;
-      returnHPressed = true;
-    }
-
-    // Handle ALT ABOUT MENU when RELEASED
-    if (aboutPressed && !returnAPressed)
-    {
-      stage.add(aboutButton[0]);
-      stage.add(aboutButton[1]);
-      stage.remove(aboutButton[2]);
-      stage.remove(aboutButton[3]);
-
-      aboutPressed = false;
-      returnAPressed = false;
-    }
-    else if (!aboutPressed && !returnAPressed)
-    {
-      stage.add(aboutButton[0]);
-      stage.add(aboutButton[1]);
-      stage.add(aboutButton[2]);
-      stage.add(aboutButton[3]);
-
-      aboutPressed = false;
-      returnAPressed = true;
-    }
   }
 
   /**
