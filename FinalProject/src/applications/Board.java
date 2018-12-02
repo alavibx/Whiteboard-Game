@@ -26,6 +26,7 @@ public class Board extends AbstractSprite
   private int totalPoints, speed, decrementSpeed;
   private boolean gameWon,gameLost;
   private int gameTime;
+  private int increaseTime;
 
   private ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
   private ImageFactory factory = new ImageFactory(finder);
@@ -130,7 +131,15 @@ public class Board extends AbstractSprite
   public void handleTick(int time)
   {
     
-    gameTime++;
+    
+    increaseTime++;
+    
+    
+    if(increaseTime % 12 == 0) {
+      gameTime++;
+    }
+    
+        
     
     for (int i = 0; i < contents.size(); i++)
     {

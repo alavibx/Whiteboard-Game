@@ -93,7 +93,7 @@ public class BernstdhBoard extends JApplication
     finder = ResourceFinder.createInstance(resources.Marker.class);
 
     JPanel topPanel = new JPanel(new GridLayout(0, 1));
-    topPanel.setBackground(Color.YELLOW);
+    topPanel.setBackground(Color.CYAN);
     score = new JLabel("Welcome to ISAT 236", SwingConstants.CENTER);
     time = new JLabel("Time: ", SwingConstants.CENTER);
     score.setFont(new Font(score.getFont().getName(), Font.ITALIC, 20));
@@ -550,7 +550,7 @@ public class BernstdhBoard extends JApplication
     if (board != null)
     {
       score.setText("SCORE: " + board.getTotalPoints());
-      time.setText("TIME: " + board.gameTime());
+      time.setText("TIME: " + board.gameTime() + " seconds");
 
       if (board.gameWon())
       {
