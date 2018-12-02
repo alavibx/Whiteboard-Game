@@ -2,7 +2,6 @@ package applications;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import io.ResourceFinder;
 import visual.dynamic.described.AbstractSprite;
@@ -14,7 +13,7 @@ import visual.statik.sampled.ImageFactory;
 /**
  * 
  * @author Behan Alavi, Jonathon Kent, Cayleigh Verhaalen
- * @version 11/29/2018
+ * @version 12/2/2018
  */
 public class Board extends AbstractSprite
 {
@@ -24,7 +23,7 @@ public class Board extends AbstractSprite
   private BufferedImage[] negativeSprites;
   private Stage stage;
   private int totalPoints, speed, decrementSpeed;
-  private boolean gameWon,gameLost;
+  private boolean gameWon, gameLost;
   private int gameTime;
   private int increaseTime;
 
@@ -40,19 +39,19 @@ public class Board extends AbstractSprite
     // Get the content images from the files in the resources folder and store them in array
     String[] files = finder.loadResourceNames("content.txt");
     boardSprites = new BufferedImage[files.length];
-    
+
     // Get the content images that subtracts points if erased
     String[] minusFiles = finder.loadResourceNames("nice.txt");
     negativeSprites = new BufferedImage[minusFiles.length];
-    
+
     // Store the buffered images of board sprites in an array
     for (int i = 0; i < files.length; i++)
     {
       boardSprites[i] = factory.createBufferedImage(files[i], 4);
     }
-    
+
     // Store the buffered images of minus Sprites in an array
-    for(int x = 0; x < minusFiles.length; x++)
+    for (int x = 0; x < minusFiles.length; x++)
     {
       negativeSprites[x] = factory.createBufferedImage(minusFiles[x], 5);
     }
@@ -68,10 +67,10 @@ public class Board extends AbstractSprite
 
     // Initialize an arraylist to hold all of the contents that occupy the board
     contents = new ArrayList<BoardSprite>();
-    
+
     decrementSpeed = 75;
     speed = 3075; // 3 seconds
-    
+
     gameWon = false;
     gameLost = false;
   }
@@ -82,33 +81,33 @@ public class Board extends AbstractSprite
    * @return BoardSprite next random sprite
    */
   public BoardSprite randomSprite()
-  { 
+  {
     // Determine whether to use negative sprite or nice sprite
     int type = (int) (Math.random() * (10));
-    
-    if(type > 2)
+
+    if (type > 2)
     {
-    
-    // Get a random index number
-    int randCont = (int) (Math.random() * (boardSprites.length - 1));
-    
-    Content c = new Content(boardSprites[randCont], 0, 0);
 
-    // Create a random board sprite from the array of contents
-    BoardSprite b = new BoardSprite(c, true);
+      // Get a random index number
+      int randCont = (int) (Math.random() * (boardSprites.length - 1));
 
-    b.setLocation(b.getX(), b.getY());
-    b.addAntagonist(bernstdh);
+      Content c = new Content(boardSprites[randCont], 0, 0);
 
-    // Add the board sprite to the array list of board-occupying contents
-    contents.add(b);
-    return b;
+      // Create a random board sprite from the array of contents
+      BoardSprite b = new BoardSprite(c, true);
+
+      b.setLocation(b.getX(), b.getY());
+      b.addAntagonist(bernstdh);
+
+      // Add the board sprite to the array list of board-occupying contents
+      contents.add(b);
+      return b;
     }
     else
     {
       // Get a random index number
       int randCont = (int) (Math.random() * (negativeSprites.length - 1));
-      
+
       Content c = new Content(negativeSprites[randCont], 0, 0);
 
       // Create a random board sprite from the array of contents
@@ -130,17 +129,13 @@ public class Board extends AbstractSprite
    */
   public void handleTick(int time)
   {
-    
-    
     increaseTime++;
-    
-    
-    if(increaseTime % 12 == 0) {
+
+    if (increaseTime % 12 == 0)
+    {
       gameTime++;
     }
-    
-        
-    
+
     for (int i = 0; i < contents.size(); i++)
     {
       // If the content has completely disappeared, remove it from the stage and the array list
@@ -152,15 +147,14 @@ public class Board extends AbstractSprite
         contents.remove(i);
       }
     }
-    
+
     if (time % speed == 0)
     {
       stage.add(randomSprite());
       stage.remove(bernstdh);
       stage.add(bernstdh);
     }
-    
-    
+
     if (time % 3075 == 0 && contents.size() > 0)
     {
       if (speed > 300)
@@ -170,17 +164,17 @@ public class Board extends AbstractSprite
       else
         speed = 300;
     }
-    
+
     if (totalPoints >= 100000)
     {
       gameWon = true;
     }
-    
+
     if (contents.size() > 15)
     {
       gameLost = true;
     }
-    
+
   }
 
   /**
@@ -198,19 +192,45 @@ public class Board extends AbstractSprite
   {
     return randomSprite();
   }
-  
+
   public boolean gameWon()
   {
     return gameWon;
   }
-  
+
   public boolean gameLost()
   {
     return gameLost;
   }
-  
-  public String gameTime() 
+
+  public String gameTime()
   {
     return String.format("%d", gameTime);
+  }
+
+  /**
+   * Hides the contents on the board.
+   */
+  public void hide()
+  {
+    for (BoardSprite c : contents)
+    {
+      c.setVisible(false);
+    }
+
+    bernstdh.setVisible(false);
+  }
+
+  /**
+   * Shows the contents on the board.
+   */
+  public void show()
+  {
+    for (BoardSprite c : contents)
+    {
+      c.setVisible(true);
+    }
+
+    bernstdh.setVisible(true);
   }
 }
