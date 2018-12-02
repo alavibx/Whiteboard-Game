@@ -21,6 +21,7 @@ public class Board extends AbstractSprite
   private ArrayList<BoardSprite> contents;
   private BernsteinSprite bernstdh;
   private BufferedImage[] boardSprites;
+  private BufferedImage[] negativeSprites;
   private Stage stage;
   private int totalPoints, speed, decrementSpeed;
   private boolean gameWon,gameLost;
@@ -38,10 +39,20 @@ public class Board extends AbstractSprite
     String[] files = finder.loadResourceNames("content.txt");
     boardSprites = new BufferedImage[files.length];
     
+    // Get the content images that subtracts points if erased
+    String[] minusFiles = finder.loadResourceNames("nice.txt");
+    negativeSprites = new BufferedImage[minusFiles.length];
+    
     // Store the buffered images of board sprites in an array
     for (int i = 0; i < files.length; i++)
     {
       boardSprites[i] = factory.createBufferedImage(files[i], 4);
+    }
+    
+    // Store the buffered images of minus Sprites in an array
+    for(int x = 0; x < minusFiles.length; x++)
+    {
+      negativeSprites[x] = factory.createBufferedImage(minusFiles[x], 5);
     }
 
     // Get the stage
@@ -69,22 +80,45 @@ public class Board extends AbstractSprite
    * @return BoardSprite next random sprite
    */
   public BoardSprite randomSprite()
-  {
+  { 
+    // Determine whether to use negative sprite or nice sprite
+    int type = (int) (Math.random() * (10));
+    
+    if(type > 2)
+    {
+    
     // Get a random index number
     int randCont = (int) (Math.random() * (boardSprites.length - 1));
     
     Content c = new Content(boardSprites[randCont], 0, 0);
 
     // Create a random board sprite from the array of contents
-    BoardSprite b = new BoardSprite(c);
+    BoardSprite b = new BoardSprite(c, true);
 
     b.setLocation(b.getX(), b.getY());
     b.addAntagonist(bernstdh);
 
     // Add the board sprite to the array list of board-occupying contents
     contents.add(b);
-
     return b;
+    }
+    else
+    {
+      // Get a random index number
+      int randCont = (int) (Math.random() * (negativeSprites.length - 1));
+      
+      Content c = new Content(negativeSprites[randCont], 0, 0);
+
+      // Create a random board sprite from the array of contents
+      BoardSprite b = new BoardSprite(c, false);
+
+      b.setLocation(b.getX(), b.getY());
+      b.addAntagonist(bernstdh);
+
+      // Add the board sprite to the array list of board-occupying contents
+      contents.add(b);
+      return b;
+    }
   }
 
   /**

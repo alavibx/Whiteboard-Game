@@ -21,7 +21,7 @@ import visual.statik.sampled.ContentFactory;
  * A game.
  * 
  * @author Behan Alavi, Jonathon Kent, Cayleigh Verhaalen
- * @version 11/29/2018
+ * @version 12/2/2018
  */
 public class BernstdhBoard extends JApplication
     implements KeyListener, MetronomeListener, MouseListener
@@ -147,84 +147,6 @@ public class BernstdhBoard extends JApplication
 
     helpDisplayed = false;
     aboutDisplayed = false;
-  }
-
-  /**
-   * Initializes the images of the GUI.
-   */
-  public void setImages()
-  {
-    ContentFactory factory = new ContentFactory(finder);
-
-    // Set the background image
-    bkgd = factory.createContent("bkgd.png", 4);
-    bkgd.setScale(1.0, 1.0);
-    bkgd.setLocation(0, 0);
-    stage.add(bkgd);
-
-    // Add the main menu display
-    main = factory.createContent("mainscreen.png", 4);
-    main.setScale(1.0, 1.0);
-    main.setLocation(0, 0);
-    stage.add(main);
-
-    // Add the help display
-    help = factory.createContent("helpdescription.png", 4);
-    help.setScale(1.0);
-    help.setLocation(0, 0);
-
-    // Add the about display
-    about = factory.createContent("aboutdescription.png", 4);
-    about.setScale(1.0);
-    about.setLocation(0, 0);
-
-    /****** Get images for buttons *******/
-    /* INITIALIZE HELP BUTTON */
-    helpButton[0] = factory.createContent("return_depressed.png", 4);
-    helpButton[1] = factory.createContent("return_default.png", 4);
-    helpButton[2] = factory.createContent("help_depressed.png", 4);
-    helpButton[3] = factory.createContent("help_default.png", 4);
-
-    for (Content b : helpButton)
-    {
-      b.setScale(1.0);
-      b.setLocation(75, 15);
-      stage.add(b);
-    }
-
-    /* INITIALIZE PLAY BUTTON */
-    playButton[0] = factory.createContent("pause_depressed.png", 4);
-    playButton[1] = factory.createContent("pause_default.png", 4);
-    playButton[2] = factory.createContent("play_depressed.png", 4);
-    playButton[3] = factory.createContent("play_default.png", 4);
-
-    for (Content b : playButton)
-    {
-      b.setScale(1.0);
-      b.setLocation(BKGD_WIDTH / 2 - b.getBounds2D().getWidth() / 2, 15);
-      stage.add(b);
-    }
-
-    /* INITIALIZE ABOUT BUTTON */
-    aboutButton[0] = factory.createContent("return_depressed.png", 4);
-    aboutButton[1] = factory.createContent("return_default.png", 4);
-    aboutButton[2] = factory.createContent("about_depressed.png", 4);
-    aboutButton[3] = factory.createContent("about_default.png", 4);
-
-    for (Content b : aboutButton)
-    {
-      b.setScale(1.0);
-      b.setLocation(BKGD_WIDTH - b.getBounds2D().getWidth() - 75, 15);
-      stage.add(b);
-    }
-
-    helpPressed = false;
-    aboutPressed = false;
-    playPressed = false;
-
-    pausePressed = true;
-    returnHPressed = true;
-    returnAPressed = true;
   }
 
   /**
@@ -450,7 +372,8 @@ public class BernstdhBoard extends JApplication
     isPaused = false;
     
     playPressed = false;
-    pausePressed = true;
+    aboutPressed = false;
+    helpPressed = false;
     
     showButtons();
   }
@@ -503,79 +426,6 @@ public class BernstdhBoard extends JApplication
 
     if (gameStarted)
       isPaused = true;
-  }
-
-  public void showButtons()
-  {
-    // Show HELP button
-    if (!helpPressed && returnHPressed)
-    {
-      stage.add(helpButton[0]);
-      stage.add(helpButton[1]);
-      stage.add(helpButton[2]);
-      stage.add(helpButton[3]);
-    }
-    else if (helpPressed && !returnHPressed)
-    {
-      stage.remove(helpButton[0]);
-      stage.remove(helpButton[1]);
-      stage.add(helpButton[2]);
-      stage.remove(helpButton[3]);
-    }
-    else if (!helpPressed && !returnHPressed)
-    {
-      stage.add(helpButton[0]);
-      stage.remove(helpButton[1]);
-      stage.remove(helpButton[2]);
-      stage.remove(helpButton[3]);
-    }
-
-    // Show PLAY button
-    if (!playPressed && pausePressed)
-    {
-      stage.add(playButton[0]);
-      stage.add(playButton[1]);
-      stage.add(playButton[2]);
-      stage.add(playButton[3]);
-    }
-    else if (playPressed && !pausePressed)
-    {
-      stage.remove(playButton[0]);
-      stage.remove(playButton[1]);
-      stage.add(playButton[2]);
-      stage.remove(playButton[3]);
-    }
-    else if (!playPressed && !pausePressed)
-    {
-      stage.add(playButton[0]);
-      stage.remove(playButton[1]);
-      stage.remove(playButton[2]);
-      stage.remove(playButton[3]);
-    }
-
-    // Show ABOUT button
-    if (!aboutPressed && returnAPressed)
-    {
-      stage.add(aboutButton[0]);
-      stage.add(aboutButton[1]);
-      stage.add(aboutButton[2]);
-      stage.add(aboutButton[3]);
-    }
-    else if (aboutPressed && !returnAPressed)
-    {
-      stage.remove(aboutButton[0]);
-      stage.remove(aboutButton[1]);
-      stage.add(aboutButton[2]);
-      stage.remove(aboutButton[3]);
-    }
-    else if (!aboutPressed && !returnAPressed)
-    {
-      stage.add(aboutButton[0]);
-      stage.remove(aboutButton[1]);
-      stage.remove(aboutButton[2]);
-      stage.remove(aboutButton[3]);
-    }
-
   }
 
   /**
@@ -879,6 +729,159 @@ public class BernstdhBoard extends JApplication
       aboutPressed = false;
       returnAPressed = true;
     }
+  }
+  
+  /**
+   * Helper method for displaying buttons.
+   */
+  public void showButtons()
+  {
+    // Show HELP button
+    if (!helpPressed && returnHPressed)
+    {
+      stage.add(helpButton[0]);
+      stage.add(helpButton[1]);
+      stage.add(helpButton[2]);
+      stage.add(helpButton[3]);
+    }
+    else if (helpPressed && !returnHPressed)
+    {
+      stage.remove(helpButton[0]);
+      stage.remove(helpButton[1]);
+      stage.add(helpButton[2]);
+      stage.remove(helpButton[3]);
+    }
+    else if (!helpPressed && !returnHPressed)
+    {
+      stage.add(helpButton[0]);
+      stage.remove(helpButton[1]);
+      stage.remove(helpButton[2]);
+      stage.remove(helpButton[3]);
+    }
+
+    // Show PLAY button
+    if (!playPressed && pausePressed)
+    {
+      stage.add(playButton[0]);
+      stage.add(playButton[1]);
+      stage.add(playButton[2]);
+      stage.add(playButton[3]);
+    }
+    else if (playPressed && !pausePressed)
+    {
+      stage.remove(playButton[0]);
+      stage.remove(playButton[1]);
+      stage.add(playButton[2]);
+      stage.remove(playButton[3]);
+    }
+    else if (!playPressed && !pausePressed)
+    {
+      stage.add(playButton[0]);
+      stage.remove(playButton[1]);
+      stage.remove(playButton[2]);
+      stage.remove(playButton[3]);
+    }
+
+    // Show ABOUT button
+    if (!aboutPressed && returnAPressed)
+    {
+      stage.add(aboutButton[0]);
+      stage.add(aboutButton[1]);
+      stage.add(aboutButton[2]);
+      stage.add(aboutButton[3]);
+    }
+    else if (aboutPressed && !returnAPressed)
+    {
+      stage.remove(aboutButton[0]);
+      stage.remove(aboutButton[1]);
+      stage.add(aboutButton[2]);
+      stage.remove(aboutButton[3]);
+    }
+    else if (!aboutPressed && !returnAPressed)
+    {
+      stage.add(aboutButton[0]);
+      stage.remove(aboutButton[1]);
+      stage.remove(aboutButton[2]);
+      stage.remove(aboutButton[3]);
+    }
+  }
+  
+  /**
+   * Helper method for initializing the images of the GUI.
+   */
+  public void setImages()
+  {
+    ContentFactory factory = new ContentFactory(finder);
+
+    // Set the background image
+    bkgd = factory.createContent("bkgd.png", 4);
+    bkgd.setScale(1.0, 1.0);
+    bkgd.setLocation(0, 0);
+    stage.add(bkgd);
+
+    // Add the main menu display
+    main = factory.createContent("mainscreen.png", 4);
+    main.setScale(1.0, 1.0);
+    main.setLocation(0, 0);
+    stage.add(main);
+
+    // Add the help display
+    help = factory.createContent("helpdescription.png", 4);
+    help.setScale(1.0);
+    help.setLocation(0, 0);
+
+    // Add the about display
+    about = factory.createContent("aboutdescription.png", 4);
+    about.setScale(1.0);
+    about.setLocation(0, 0);
+
+    /****** Get images for buttons *******/
+    /* INITIALIZE HELP BUTTON */
+    helpButton[0] = factory.createContent("return_depressed.png", 4);
+    helpButton[1] = factory.createContent("return_default.png", 4);
+    helpButton[2] = factory.createContent("help_depressed.png", 4);
+    helpButton[3] = factory.createContent("help_default.png", 4);
+
+    for (Content b : helpButton)
+    {
+      b.setScale(1.0);
+      b.setLocation(75, 15);
+      stage.add(b);
+    }
+
+    /* INITIALIZE PLAY BUTTON */
+    playButton[0] = factory.createContent("pause_depressed.png", 4);
+    playButton[1] = factory.createContent("pause_default.png", 4);
+    playButton[2] = factory.createContent("play_depressed.png", 4);
+    playButton[3] = factory.createContent("play_default.png", 4);
+
+    for (Content b : playButton)
+    {
+      b.setScale(1.0);
+      b.setLocation(BKGD_WIDTH / 2 - b.getBounds2D().getWidth() / 2, 15);
+      stage.add(b);
+    }
+
+    /* INITIALIZE ABOUT BUTTON */
+    aboutButton[0] = factory.createContent("return_depressed.png", 4);
+    aboutButton[1] = factory.createContent("return_default.png", 4);
+    aboutButton[2] = factory.createContent("about_depressed.png", 4);
+    aboutButton[3] = factory.createContent("about_default.png", 4);
+
+    for (Content b : aboutButton)
+    {
+      b.setScale(1.0);
+      b.setLocation(BKGD_WIDTH - b.getBounds2D().getWidth() - 75, 15);
+      stage.add(b);
+    }
+
+    helpPressed = false;
+    aboutPressed = false;
+    playPressed = false;
+
+    pausePressed = true;
+    returnHPressed = true;
+    returnAPressed = true;
   }
 
   /*

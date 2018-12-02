@@ -21,7 +21,7 @@ public class BoardSprite extends RuleBasedSprite
   private float opacity, opacityDecrease;
   private visual.statik.sampled.TransformableContent content;
 
-  public BoardSprite(TransformableContent content)
+  public BoardSprite(TransformableContent content, Boolean gain)
   {
     super(content);
     this.content = content;
@@ -37,51 +37,102 @@ public class BoardSprite extends RuleBasedSprite
     // Generate the x position of the content randomly across the width of the whiteboard
     x = (int) (Math.random() * ((BernstdhBoard.BKGD_WIDTH - 75) - width) + 25);
 
-    // Randomly determine the y position on whiteboard
-    // Contents higher up on the board are worth more
-    if (Math.round(Math.random()) == 0)
+    if(gain)
     {
-      y = 275;
+      // Randomly determine the y position on whiteboard
+      // Contents higher up on the board are worth more
+      if (Math.round(Math.random()) == 0)
+      {
+        y = 275;
+      }
+      else
+      {
+        y = 175;
+        points += 100;
+      }
+
+      // Increase point value depending on opacityDecrease
+      if (opacityDecrease < 0.05)
+        points += 300;
+      else if (opacityDecrease < 0.1)
+        points += 250;
+      else if (opacityDecrease < 0.25)
+        points += 200;
+      else if (opacityDecrease < 0.5)
+        points += 150;
+      else if (opacityDecrease < 0.75)
+        points += 100;
+      else
+        points += 50;
+
+      // Increase point value depending on width of content
+      if (width >= 400)
+        points += 200;
+      else if (width >= 300)
+        points += 150;
+      else if (width >= 200)
+        points += 100;
+      else
+        points += 50;
+
+      // Increase point value depending on height of content
+      if (height >= 100)
+        points += 100;
+      else if (height >= 75)
+        points += 75;
+      else if (height >= 50)
+        points += 50;
+      else
+        points += 25;
     }
-    else
+    if(!gain)
     {
-      y = 175;
-      points += 100;
+      // Randomly determine the y position on whiteboard
+      // Contents higher up on the board are worth more
+      if (Math.round(Math.random()) == 0)
+      {
+        y = 275;
+      }
+      else
+      {
+        y = 175;
+        points -= 100;
+      }
+
+      // Increase point value depending on opacityDecrease
+      if (opacityDecrease < 0.05)
+        points -= 300;
+      else if (opacityDecrease < 0.1)
+        points -= 250;
+      else if (opacityDecrease < 0.25)
+        points -= 200;
+      else if (opacityDecrease < 0.5)
+        points -= 150;
+      else if (opacityDecrease < 0.75)
+        points -= 100;
+      else
+        points -= 50;
+
+      // Increase point value depending on width of content
+      if (width >= 400)
+        points -= 200;
+      else if (width >= 300)
+        points -= 150;
+      else if (width >= 200)
+        points -= 100;
+      else
+        points -= 50;
+
+      // Increase point value depending on height of content
+      if (height >= 100)
+        points -= 100;
+      else if (height >= 75)
+        points -= 75;
+      else if (height >= 50)
+        points -= 50;
+      else
+        points -= 25;
     }
-
-    // Increase point value depending on opacityDecrease
-    if (opacityDecrease < 0.05)
-      points += 300;
-    else if (opacityDecrease < 0.1)
-      points += 250;
-    else if (opacityDecrease < 0.25)
-      points += 200;
-    else if (opacityDecrease < 0.5)
-      points += 150;
-    else if (opacityDecrease < 0.75)
-      points += 100;
-    else
-      points += 50;
-
-    // Increase point value depending on width of content
-    if (width >= 400)
-      points += 200;
-    else if (width >= 300)
-      points += 150;
-    else if (width >= 200)
-      points += 100;
-    else
-      points += 50;
-
-    // Increase point value depending on height of content
-    if (height >= 100)
-      points += 100;
-    else if (height >= 75)
-      points += 75;
-    else if (height >= 50)
-      points += 50;
-    else
-      points += 25;
   }
 
   /**
