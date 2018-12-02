@@ -44,7 +44,7 @@ public class BernstdhBoard extends JApplication
   private Clip mainClip, gameClip;
   private VisualizationView stageView;
 
-  Stage stage;
+  private Stage stage;
 
   /**
    * Contructs a new BernstdhBoard of the size width x height.
@@ -93,7 +93,7 @@ public class BernstdhBoard extends JApplication
     finder = ResourceFinder.createInstance(resources.Marker.class);
 
     JPanel topPanel = new JPanel(new GridLayout(0, 1));
-    topPanel.setBackground(Color.CYAN);
+    topPanel.setBackground(Color.WHITE);
     score = new JLabel("Welcome to ISAT 236", SwingConstants.CENTER);
     time = new JLabel("Time: ", SwingConstants.CENTER);
     score.setFont(new Font(score.getFont().getName(), Font.ITALIC, 20));
@@ -109,6 +109,7 @@ public class BernstdhBoard extends JApplication
     stage.setBackground(Color.WHITE);
 
     stageView = stage.getView();
+
     centerPanel.add(stageView, BorderLayout.CENTER);
     contentPane.add(centerPanel);
 
@@ -170,12 +171,12 @@ public class BernstdhBoard extends JApplication
     {
       playPressed = true;
       pausePressed = false;
-      
+
       stage.add(playButton[0]);
       stage.add(playButton[1]);
       stage.add(playButton[2]);
       stage.add(playButton[3]);
-      
+
       if (!isPaused && gameStarted)
         pauseGame();
       else if (isPaused && gameStarted)
@@ -205,7 +206,7 @@ public class BernstdhBoard extends JApplication
       returnHPressed = true;
       aboutPressed = false;
       returnAPressed = true;
-      
+
       if (!gameStarted)
       {
         showMainMenu();
@@ -242,7 +243,7 @@ public class BernstdhBoard extends JApplication
     playY = playButton[1].getBounds2D().getY();
     playW = playButton[1].getBounds2D().getWidth();
     playH = playButton[1].getBounds2D().getHeight();
-    
+
     helpX = helpButton[3].getBounds2D().getX();
     helpY = helpButton[3].getBounds2D().getY();
     helpW = helpButton[3].getBounds2D().getWidth();
@@ -265,10 +266,10 @@ public class BernstdhBoard extends JApplication
 
         playPressed = true;
         pausePressed = false;
-        
+
         helpPressed = false;
         returnHPressed = true;
-        
+
         aboutPressed = false;
         returnAPressed = true;
       }
@@ -295,10 +296,10 @@ public class BernstdhBoard extends JApplication
 
         helpPressed = true;
         returnHPressed = false;
-        
+
         aboutPressed = false;
         returnAPressed = true;
-        
+
         playPressed = false;
         pausePressed = true;
       }
@@ -325,10 +326,10 @@ public class BernstdhBoard extends JApplication
 
         aboutPressed = true;
         returnAPressed = false;
-        
+
         helpPressed = false;
         returnHPressed = true;
-        
+
         playPressed = false;
         pausePressed = true;
       }
@@ -374,11 +375,11 @@ public class BernstdhBoard extends JApplication
     helpDisplayed = false;
     gameStarted = false;
     isPaused = false;
-    
+
     playPressed = false;
     aboutPressed = false;
     helpPressed = false;
-    
+
     showButtons();
   }
 
@@ -387,15 +388,18 @@ public class BernstdhBoard extends JApplication
    */
   public void showHelpMenu()
   {
-    stage.clear();
-    stage.add(bkgd);
+    if (board != null)
+      board.hide();
+
+    stage.remove(main);
+    stage.remove(about);
     stage.add(help);
 
     showButtons();
 
     helpDisplayed = true;
     aboutDisplayed = false;
-    
+
     playPressed = false;
     pausePressed = true;
     helpPressed = true;
@@ -412,15 +416,18 @@ public class BernstdhBoard extends JApplication
    */
   public void showAboutMenu()
   {
-    stage.clear();
-    stage.add(bkgd);
+    if (board != null)
+      board.hide();
+
+    stage.remove(main);
+    stage.remove(help);
     stage.add(about);
 
     showButtons();
 
     helpDisplayed = false;
     aboutDisplayed = true;
-    
+
     playPressed = false;
     pausePressed = true;
     helpPressed = false;
@@ -439,14 +446,13 @@ public class BernstdhBoard extends JApplication
    */
   public void pauseGame()
   {
+    stage.getMetronome().stop();
 
-    stage.stop();
-
-    if (helpDisplayed)
+    if (helpPressed)
     {
       stage.add(help);
     }
-    else if (aboutDisplayed)
+    else if (aboutPressed)
     {
       stage.add(about);
     }
@@ -461,6 +467,8 @@ public class BernstdhBoard extends JApplication
    */
   public void resumeGame()
   {
+    board.show();
+
     if (helpDisplayed)
     {
       stage.remove(help);
@@ -469,11 +477,8 @@ public class BernstdhBoard extends JApplication
     {
       stage.remove(about);
     }
-    /*
-     * stage.remove(help); stage.remove(about);
-     */
 
-    stage.start();
+    stage.getMetronome().start();
 
     showButtons();
 
@@ -505,8 +510,6 @@ public class BernstdhBoard extends JApplication
 
     gameStarted = true;
     board = new Board(stage);
-
-    stage.getMetronome().addListener(this);
 
     if (!replay)
       initializeGameMusic();
@@ -551,7 +554,7 @@ public class BernstdhBoard extends JApplication
     {
       score.setText("SCORE: " + board.getTotalPoints());
       time.setText("TIME: " + board.gameTime() + " seconds");
-
+      
       if (board.gameWon())
       {
         stage.stop();
@@ -608,13 +611,11 @@ public class BernstdhBoard extends JApplication
     else if (aboutDisplayed && gameStarted)
     {
       resumeGame();
-      board.setVisible(true);
       stage.remove(about);
     }
     else if (!aboutDisplayed && gameStarted)
     {
       pauseGame();
-      board.setVisible(false);
       showAboutMenu();
     }
   }
@@ -635,17 +636,15 @@ public class BernstdhBoard extends JApplication
     else if (helpDisplayed && gameStarted)
     {
       resumeGame();
-      board.setVisible(true);
       stage.remove(help);
     }
     else if (!helpDisplayed && gameStarted)
     {
       pauseGame();
-      board.setVisible(false);
       showHelpMenu();
     }
   }
-  
+
   /**
    * Helper method for PLAY.
    */
@@ -735,7 +734,7 @@ public class BernstdhBoard extends JApplication
       returnAPressed = true;
     }
   }
-  
+
   /**
    * Helper method for displaying buttons.
    */
@@ -810,7 +809,7 @@ public class BernstdhBoard extends JApplication
       stage.remove(aboutButton[3]);
     }
   }
-  
+
   /**
    * Helper method for initializing the images of the GUI.
    */
