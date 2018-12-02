@@ -37,6 +37,7 @@ public class BernstdhBoard extends JApplication
   private JPanel contentPane;
   private boolean isPaused, gameStarted, replay;
   private JLabel score;
+  private JLabel time;
   private Board board;
   private JFrame mainWindow;
   private ResourceFinder finder;
@@ -92,10 +93,13 @@ public class BernstdhBoard extends JApplication
     finder = ResourceFinder.createInstance(resources.Marker.class);
 
     JPanel topPanel = new JPanel(new GridLayout(0, 1));
-    topPanel.setBackground(Color.WHITE);
+    topPanel.setBackground(Color.YELLOW);
     score = new JLabel("Welcome to ISAT 236", SwingConstants.CENTER);
+    time = new JLabel("Time: ", SwingConstants.CENTER);
     score.setFont(new Font(score.getFont().getName(), Font.ITALIC, 20));
+    time.setFont(new Font(time.getFont().getName(), Font.ITALIC, 20));
     topPanel.add(score);
+    topPanel.add(time);
     contentPane.add(topPanel);
 
     // Create and add the stage
@@ -546,6 +550,7 @@ public class BernstdhBoard extends JApplication
     if (board != null)
     {
       score.setText("SCORE: " + board.getTotalPoints());
+      time.setText("TIME: " + board.gameTime());
 
       if (board.gameWon())
       {

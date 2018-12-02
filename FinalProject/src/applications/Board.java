@@ -25,6 +25,7 @@ public class Board extends AbstractSprite
   private Stage stage;
   private int totalPoints, speed, decrementSpeed;
   private boolean gameWon,gameLost;
+  private int gameTime;
 
   private ResourceFinder finder = ResourceFinder.createInstance(resources.Marker.class);
   private ImageFactory factory = new ImageFactory(finder);
@@ -128,6 +129,9 @@ public class Board extends AbstractSprite
    */
   public void handleTick(int time)
   {
+    
+    gameTime++;
+    
     for (int i = 0; i < contents.size(); i++)
     {
       // If the content has completely disappeared, remove it from the stage and the array list
@@ -194,5 +198,10 @@ public class Board extends AbstractSprite
   public boolean gameLost()
   {
     return gameLost;
+  }
+  
+  public String gameTime() 
+  {
+    return String.format("%d", gameTime);
   }
 }
