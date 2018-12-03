@@ -36,13 +36,15 @@ public class BernstdhBoard extends JApplication
       aboutPressed;
   private JPanel contentPane;
   private boolean isPaused, gameStarted, replay;
-  private JLabel score;
-  private JLabel time;
   private Board board;
   private JFrame mainWindow;
   private ResourceFinder finder;
   private Clip mainClip, gameClip;
   private VisualizationView stageView;
+  
+  private JLabel score;
+  private JLabel time;
+  private int currentBestScore, currentBestTime;
 
   private Stage stage;
 
@@ -79,6 +81,9 @@ public class BernstdhBoard extends JApplication
   @Override
   public void init()
   {
+    currentBestScore = 0;
+    currentBestTime = 0;
+    
     // SET THE VISUAL COMPONENTS OF THE GUI
     // Get the content pane of the window
     contentPane = (JPanel) this.getContentPane();
@@ -94,8 +99,9 @@ public class BernstdhBoard extends JApplication
 
     JPanel topPanel = new JPanel(new GridLayout(0, 1));
     topPanel.setBackground(Color.WHITE);
-    score = new JLabel("Welcome to ISAT 236", SwingConstants.CENTER);
-    time = new JLabel("Time: ", SwingConstants.CENTER);
+    score = new JLabel("Welcome to ISAT/CS 236", SwingConstants.CENTER);
+    time = new JLabel("Current Best Score: -----", SwingConstants.CENTER);
+    
     score.setFont(new Font(score.getFont().getName(), Font.ITALIC, 20));
     time.setFont(new Font(time.getFont().getName(), Font.ITALIC, 20));
     topPanel.add(score);
@@ -350,6 +356,13 @@ public class BernstdhBoard extends JApplication
    */
   public void endGame()
   {
+    playPressed = false;
+    pausePressed = true;
+    helpPressed = false;
+    returnHPressed = true;
+    aboutPressed = false;
+    returnAPressed = true;
+    
     board.setVisible(false);
     stage.remove(board);
     board = null;
@@ -365,7 +378,8 @@ public class BernstdhBoard extends JApplication
    */
   public void showMainMenu()
   {
-    score.setText("Welcome to ISAT 236");
+    score.setText("WELCOME TO ISAT/CS 236");
+    time.setText("Current Best Score: " + currentBestScore);
 
     stage.clear();
     stage.add(bkgd);
@@ -557,6 +571,21 @@ public class BernstdhBoard extends JApplication
       
       if (board.gameWon())
       {
+        if (currentBestTime == 0)
+        {
+          currentBestTime = board.gameTime();
+        }
+        
+        if (currentBestScore < board.getTotalPoints())
+        {
+          currentBestScore = board.getTotalPoints();
+          
+          if (currentBestTime < board.gameTime())
+          {
+            currentBestTime = board.gameTime();
+          }
+        }
+        
         stage.stop();
 
         int dialogRes = JOptionPane.showConfirmDialog(contentPane,
@@ -574,6 +603,11 @@ public class BernstdhBoard extends JApplication
 
       if (board.gameLost())
       {
+        if (currentBestScore < board.getTotalPoints())
+        {
+          currentBestScore = board.getTotalPoints();
+        }
+        
         stage.stop();
 
         int dialogRes = JOptionPane.showConfirmDialog(contentPane,

@@ -19,12 +19,14 @@ public class BoardSprite extends RuleBasedSprite
   private int width, height;
   private int points;
   private float opacity, opacityDecrease;
+  private Boolean gain;
   private visual.statik.sampled.TransformableContent content;
 
   public BoardSprite(TransformableContent content, Boolean gain)
   {
     super(content);
     this.content = content;
+    this.gain = gain;
 
     opacity = 1f;
     opacityDecrease = (float) Math.random();
@@ -99,7 +101,7 @@ public class BoardSprite extends RuleBasedSprite
         points -= 100;
       }
 
-      // Increase point value depending on opacityDecrease
+      // Decrease point value depending on opacityDecrease
       if (opacityDecrease < 0.05)
         points -= 300;
       else if (opacityDecrease < 0.1)
@@ -113,7 +115,7 @@ public class BoardSprite extends RuleBasedSprite
       else
         points -= 50;
 
-      // Increase point value depending on width of content
+      // Decrease point value depending on width of content
       if (width >= 400)
         points -= 200;
       else if (width >= 300)
@@ -123,7 +125,7 @@ public class BoardSprite extends RuleBasedSprite
       else
         points -= 50;
 
-      // Increase point value depending on height of content
+      // Decrease point value depending on height of content
       if (height >= 100)
         points -= 100;
       else if (height >= 75)
@@ -171,6 +173,16 @@ public class BoardSprite extends RuleBasedSprite
   public int getY()
   {
     return y;
+  }
+  
+  /**
+   * Returns whether user gain points or loses points.
+   * 
+   * @return gain points or not
+   */
+  public Boolean getGain()
+  {
+    return gain;
   }
 
   @Override

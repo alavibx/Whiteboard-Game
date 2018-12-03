@@ -155,6 +155,15 @@ public class Board extends AbstractSprite
       stage.add(bernstdh);
     }
 
+    if (time % 5000 == 0)
+    {
+      for (int x = 0; x < contents.size(); x++)
+      {
+        if (contents.get(x).getGain() == false)
+          stage.remove(contents.get(x));
+      }
+    }
+
     if (time % 3075 == 0 && contents.size() > 0)
     {
       if (speed > 300)
@@ -165,10 +174,12 @@ public class Board extends AbstractSprite
         speed = 300;
     }
 
-    if (totalPoints >= 100000)
+    if (totalPoints >= 50000)
     {
       gameWon = true;
     }
+    
+    contents.trimToSize();
 
     if (contents.size() > 15)
     {
@@ -203,9 +214,9 @@ public class Board extends AbstractSprite
     return gameLost;
   }
 
-  public String gameTime()
+  public int gameTime()
   {
-    return String.format("%d", gameTime);
+    return gameTime;
   }
 
   /**
