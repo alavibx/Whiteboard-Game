@@ -3,6 +3,14 @@ package applications;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import io.ResourceFinder;
 import visual.statik.sampled.*;
@@ -22,6 +30,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
   private int jumpTime, xBernstein, yBernstein;
   private int direction, position;
   private Content[][] images;
+  private Clip eraseClip;
 
   // directions
   public static final int RIGHT = 0;
@@ -63,6 +72,21 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
 
     setLocation(xBernstein, yBernstein);
     setVisible(true);
+    
+    try
+    {
+      BufferedInputStream bis = new BufferedInputStream(finder.findInputStream("erase.wav"));
+      AudioInputStream ais = AudioSystem.getAudioInputStream(bis);
+      
+      System.out.print("HERE");
+
+      eraseClip = AudioSystem.getClip();
+      eraseClip.open(ais);
+    }
+    catch (IOException | UnsupportedAudioFileException | LineUnavailableException e)
+    {
+      // DO NOTHING
+    }
   }
 
   /**
@@ -152,6 +176,8 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
    */
   public void handleFire()
   {
+    eraseClip.start();
+    eraseClip.setMicrosecondPosition(0);
     direction = BACK;
     position = ERASE1;
     position = ERASE2;

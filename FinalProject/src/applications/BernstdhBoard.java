@@ -35,13 +35,14 @@ public class BernstdhBoard extends JApplication
   private boolean helpPressed, playPressed, pausePressed, returnHPressed, returnAPressed,
       aboutPressed;
   private JPanel contentPane;
-  private boolean isPaused, gameStarted, replay;
+  private boolean isPaused, gameStarted, replay, isMuted;
   private Board board;
   private JFrame mainWindow;
   private ResourceFinder finder;
+  private FloatControl mainVolume, gameVolume;
   private Clip mainClip, gameClip;
   private VisualizationView stageView;
-  
+
   private JLabel score;
   private JLabel time;
   private int currentBestScore, currentBestTime;
@@ -83,7 +84,7 @@ public class BernstdhBoard extends JApplication
   {
     currentBestScore = 0;
     currentBestTime = 0;
-    
+
     // SET THE VISUAL COMPONENTS OF THE GUI
     // Get the content pane of the window
     contentPane = (JPanel) this.getContentPane();
@@ -101,7 +102,7 @@ public class BernstdhBoard extends JApplication
     topPanel.setBackground(Color.WHITE);
     score = new JLabel("Welcome to ISAT/CS 236", SwingConstants.CENTER);
     time = new JLabel("Current Best Score: -----", SwingConstants.CENTER);
-    
+
     score.setFont(new Font(score.getFont().getName(), Font.ITALIC, 20));
     time.setFont(new Font(time.getFont().getName(), Font.ITALIC, 20));
     topPanel.add(score);
@@ -139,8 +140,20 @@ public class BernstdhBoard extends JApplication
 
       mainClip = AudioSystem.getClip();
       mainClip.open(ais);
+
+      mainVolume = (FloatControl) mainClip.getControl(FloatControl.Type.MASTER_GAIN);
+      mainVolume.setValue(-10f);
+
       mainClip.start();
       mainClip.loop(Clip.LOOP_CONTINUOUSLY);
+
+      bis = new BufferedInputStream(finder.findInputStream("game.wav"));
+      ais = AudioSystem.getAudioInputStream(bis);
+      gameClip = AudioSystem.getClip();
+      gameClip.open(ais);
+
+      gameVolume = (FloatControl) gameClip.getControl(FloatControl.Type.MASTER_GAIN);
+      gameVolume.setValue(-10f);
     }
     catch (IOException | UnsupportedAudioFileException | LineUnavailableException e)
     {
@@ -155,6 +168,7 @@ public class BernstdhBoard extends JApplication
     isPaused = false;
     gameStarted = false;
     replay = false;
+    isMuted = false;
 
     helpDisplayed = false;
     aboutDisplayed = false;
@@ -171,6 +185,22 @@ public class BernstdhBoard extends JApplication
   {
     int keyCode;
     keyCode = ke.getKeyCode();
+
+    if ((keyCode == KeyEvent.VK_ENTER))
+    {
+      if (isMuted)
+      {
+        gameVolume.setValue(-10f);
+        mainVolume.setValue(-10f);
+        isMuted = false;
+      }
+      else if (!isMuted)
+      {
+        gameVolume.setValue(-80f);
+        mainVolume.setValue(-80f);
+        isMuted = true;
+      }
+    }
 
     // Handle the PAUSE, RESUME, and PLAY
     if ((keyCode == KeyEvent.VK_SPACE))
@@ -362,7 +392,7 @@ public class BernstdhBoard extends JApplication
     returnHPressed = true;
     aboutPressed = false;
     returnAPressed = true;
-    
+
     board.setVisible(false);
     stage.remove(board);
     board = null;
@@ -460,6 +490,9 @@ public class BernstdhBoard extends JApplication
    */
   public void pauseGame()
   {
+    FloatControl volume = (FloatControl) gameClip.getControl(FloatControl.Type.MASTER_GAIN);
+    volume.setValue(-80f);
+
     stage.getMetronome().stop();
 
     if (helpPressed)
@@ -481,6 +514,9 @@ public class BernstdhBoard extends JApplication
    */
   public void resumeGame()
   {
+
+    gameVolume.setValue(-10f);
+
     board.show();
 
     if (helpDisplayed)
@@ -521,12 +557,11 @@ public class BernstdhBoard extends JApplication
       stage.remove(help);
       helpDisplayed = false;
     }
+    
+    initializeGameMusic();
 
     gameStarted = true;
     board = new Board(stage);
-
-    if (!replay)
-      initializeGameMusic();
 
     stage.remove(main);
     stage.add(board);
@@ -540,22 +575,13 @@ public class BernstdhBoard extends JApplication
   public void initializeGameMusic()
   {
     // Play game music, if the file is available. Otherwise, continue with no music.
-    try
-    {
-      BufferedInputStream bis = new BufferedInputStream(finder.findInputStream("game.wav"));
-      AudioInputStream ais = AudioSystem.getAudioInputStream(bis);
-      gameClip = AudioSystem.getClip();
-      gameClip.open(ais);
-      gameClip.start();
 
-      mainClip.stop();
+    gameClip.start();
 
-      gameClip.loop(Clip.LOOP_CONTINUOUSLY);
-    }
-    catch (IOException | UnsupportedAudioFileException | LineUnavailableException e)
-    {
-      // Do nothing
-    }
+    mainClip.stop();
+
+    gameClip.loop(Clip.LOOP_CONTINUOUSLY);
+
   }
 
   /**
@@ -568,24 +594,24 @@ public class BernstdhBoard extends JApplication
     {
       score.setText("SCORE: " + board.getTotalPoints());
       time.setText("TIME: " + board.gameTime() + " seconds");
-      
+
       if (board.gameWon())
       {
         if (currentBestTime == 0)
         {
           currentBestTime = board.gameTime();
         }
-        
+
         if (currentBestScore < board.getTotalPoints())
         {
           currentBestScore = board.getTotalPoints();
-          
+
           if (currentBestTime < board.gameTime())
           {
             currentBestTime = board.gameTime();
           }
         }
-        
+
         stage.stop();
 
         int dialogRes = JOptionPane.showConfirmDialog(contentPane,
@@ -607,7 +633,7 @@ public class BernstdhBoard extends JApplication
         {
           currentBestScore = board.getTotalPoints();
         }
-        
+
         stage.stop();
 
         int dialogRes = JOptionPane.showConfirmDialog(contentPane,
