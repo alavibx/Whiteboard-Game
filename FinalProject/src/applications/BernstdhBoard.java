@@ -206,20 +206,7 @@ public class BernstdhBoard extends JApplication
     // Handle the PAUSE, RESUME, and PLAY
     if ((keyCode == KeyEvent.VK_SPACE))
     {
-      playPressed = true;
-      pausePressed = false;
-
-      stage.add(playButton[0]);
-      stage.add(playButton[1]);
-      stage.add(playButton[2]);
-      stage.add(playButton[3]);
-
-      if (!isPaused && gameStarted)
-        pauseGame();
-      else if (isPaused && gameStarted)
-        resumeGame();
-      else if (!isPaused && !gameStarted)
-        startGame();
+      playHandler();
     }
 
     // Handle the HELP menu
@@ -294,90 +281,18 @@ public class BernstdhBoard extends JApplication
     // Handle PLAY when PRESSED
     if (x >= playX && x <= playX + playW && y >= playY && y <= playY + playH)
     {
-      if (!playPressed && pausePressed)
-      {
-        stage.add(playButton[0]);
-        stage.add(playButton[1]);
-        stage.add(playButton[2]);
-        stage.remove(playButton[3]);
-
-        playPressed = true;
-        pausePressed = false;
-
-        helpPressed = false;
-        returnHPressed = true;
-
-        aboutPressed = false;
-        returnAPressed = true;
-      }
-      else if (!playPressed && !pausePressed)
-      {
-        stage.add(playButton[0]);
-        stage.remove(playButton[1]);
-        stage.remove(playButton[2]);
-        stage.remove(playButton[3]);
-      }
-
       playHandler();
     }
 
     // Handle HELP MENU when PRESSED
     if (x >= helpX && x <= helpX + helpW && y >= helpY && y <= helpY + helpH)
     {
-      if (!helpPressed && returnHPressed)
-      {
-        stage.add(helpButton[0]);
-        stage.add(helpButton[1]);
-        stage.add(helpButton[2]);
-        stage.remove(helpButton[3]);
-
-        helpPressed = true;
-        returnHPressed = false;
-
-        aboutPressed = false;
-        returnAPressed = true;
-
-        playPressed = false;
-        pausePressed = true;
-      }
-      else if (!helpPressed && !returnHPressed)
-      {
-        stage.add(helpButton[0]);
-        stage.remove(helpButton[1]);
-        stage.remove(helpButton[2]);
-        stage.remove(helpButton[3]);
-      }
-
       helpHandler();
     }
 
     // Handle ABOUT MENU when PRESSED
     if (x >= aboutX && x <= aboutX + aboutW && y >= aboutY && y <= aboutY + aboutH)
     {
-      if (!aboutPressed && returnAPressed)
-      {
-        stage.add(aboutButton[0]);
-        stage.add(aboutButton[1]);
-        stage.add(aboutButton[2]);
-        stage.remove(aboutButton[3]);
-
-        aboutPressed = true;
-        returnAPressed = false;
-
-        helpPressed = false;
-        returnHPressed = true;
-
-        playPressed = false;
-        pausePressed = true;
-      }
-      else if (!aboutPressed && !returnAPressed)
-      {
-        stage.add(aboutButton[0]);
-        stage.remove(aboutButton[1]);
-        stage.remove(aboutButton[2]);
-        stage.remove(aboutButton[3]);
-      }
-
       aboutHandler();
     }
   }
@@ -582,14 +497,14 @@ public class BernstdhBoard extends JApplication
    */
   public void initializeGameMusic()
   {
-    // Play game music, if the file is available. Otherwise, continue with no music.
+    if (gameClip != null)
+    {
+      gameClip.start();
 
-    gameClip.start();
+      mainClip.stop();
 
-    mainClip.stop();
-
-    gameClip.loop(Clip.LOOP_CONTINUOUSLY);
-
+      gameClip.loop(Clip.LOOP_CONTINUOUSLY);
+    }
   }
 
   /**
@@ -670,6 +585,30 @@ public class BernstdhBoard extends JApplication
    */
   public void aboutHandler()
   {
+    if (!aboutPressed && returnAPressed)
+    {
+      stage.add(aboutButton[0]);
+      stage.add(aboutButton[1]);
+      stage.add(aboutButton[2]);
+      stage.remove(aboutButton[3]);
+
+      aboutPressed = true;
+      returnAPressed = false;
+
+      helpPressed = false;
+      returnHPressed = true;
+
+      playPressed = false;
+      pausePressed = true;
+    }
+    else if (!aboutPressed && !returnAPressed)
+    {
+      stage.add(aboutButton[0]);
+      stage.remove(aboutButton[1]);
+      stage.remove(aboutButton[2]);
+      stage.remove(aboutButton[3]);
+    }
+
     if (aboutDisplayed && !gameStarted)
     {
       showMainMenu();
@@ -695,6 +634,30 @@ public class BernstdhBoard extends JApplication
    */
   public void helpHandler()
   {
+    if (!helpPressed && returnHPressed)
+    {
+      stage.add(helpButton[0]);
+      stage.add(helpButton[1]);
+      stage.add(helpButton[2]);
+      stage.remove(helpButton[3]);
+
+      helpPressed = true;
+      returnHPressed = false;
+
+      aboutPressed = false;
+      returnAPressed = true;
+
+      playPressed = false;
+      pausePressed = true;
+    }
+    else if (!helpPressed && !returnHPressed)
+    {
+      stage.add(helpButton[0]);
+      stage.remove(helpButton[1]);
+      stage.remove(helpButton[2]);
+      stage.remove(helpButton[3]);
+    }
+
     if (helpDisplayed && !gameStarted)
     {
       showMainMenu();
@@ -720,6 +683,30 @@ public class BernstdhBoard extends JApplication
    */
   public void playHandler()
   {
+    if (!playPressed && pausePressed)
+    {
+      stage.add(playButton[0]);
+      stage.add(playButton[1]);
+      stage.add(playButton[2]);
+      stage.remove(playButton[3]);
+
+      playPressed = true;
+      pausePressed = false;
+
+      helpPressed = false;
+      returnHPressed = true;
+
+      aboutPressed = false;
+      returnAPressed = true;
+    }
+    else if (!playPressed && !pausePressed)
+    {
+      stage.add(playButton[0]);
+      stage.remove(playButton[1]);
+      stage.remove(playButton[2]);
+      stage.remove(playButton[3]);
+    }
+
     if (!gameStarted && !isPaused)
       startGame();
     else if (gameStarted && !isPaused)
@@ -958,14 +945,6 @@ public class BernstdhBoard extends JApplication
     returnAPressed = true;
   }
 
-  /*
-   * **************************************************************************************
-   * **************************************************************************************
-   * *********************** UNUSED METHODS - NEEDED FOR INTERFACES ***********************
-   * **************************************************************************************
-   * **************************************************************************************
-   */
-
   /**
    * Person has released key.
    * 
@@ -973,7 +952,80 @@ public class BernstdhBoard extends JApplication
    */
   public void keyReleased(KeyEvent arg0)
   {
+    // Handle PLAY when RELEASED
+    if (playPressed && !pausePressed)
+    {
+      stage.add(playButton[0]);
+      stage.add(playButton[1]);
+      stage.remove(playButton[2]);
+      stage.remove(playButton[3]);
+
+      playPressed = false;
+      pausePressed = false;
+    }
+    else if (!playPressed && !pausePressed)
+    {
+      stage.add(playButton[0]);
+      stage.add(playButton[1]);
+      stage.add(playButton[2]);
+      stage.add(playButton[3]);
+
+      playPressed = false;
+      pausePressed = true;
+    }
+
+    // Handle HELP MENU when RELEASED
+    if (helpPressed && !returnHPressed)
+    {
+      stage.add(helpButton[0]);
+      stage.add(helpButton[1]);
+      stage.remove(helpButton[2]);
+      stage.remove(helpButton[3]);
+
+      helpPressed = false;
+      returnHPressed = false;
+    }
+    else if (!helpPressed && !returnHPressed)
+    {
+      stage.add(helpButton[0]);
+      stage.add(helpButton[1]);
+      stage.add(helpButton[2]);
+      stage.add(helpButton[3]);
+
+      helpPressed = false;
+      returnHPressed = true;
+    }
+
+    // Handle ABOUT MENU when RELEASED
+    if (aboutPressed && !returnAPressed)
+    {
+      stage.add(aboutButton[0]);
+      stage.add(aboutButton[1]);
+      stage.remove(aboutButton[2]);
+      stage.remove(aboutButton[3]);
+
+      aboutPressed = false;
+      returnAPressed = false;
+    }
+    else if (!aboutPressed && !returnAPressed)
+    {
+      stage.add(aboutButton[0]);
+      stage.add(aboutButton[1]);
+      stage.add(aboutButton[2]);
+      stage.add(aboutButton[3]);
+
+      aboutPressed = false;
+      returnAPressed = true;
+    }
   }
+
+  /*
+   * **************************************************************************************
+   * **************************************************************************************
+   * *********************** UNUSED METHODS - NEEDED FOR INTERFACES ***********************
+   * **************************************************************************************
+   * **************************************************************************************
+   */
 
   /**
    * Person has pressed on a key.
