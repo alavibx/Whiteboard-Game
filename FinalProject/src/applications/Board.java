@@ -143,7 +143,7 @@ public class Board extends AbstractSprite
       {
         stage.remove(contents.get(i));
         totalPoints += contents.get(i).getPoints();
-        contents.get(i).resetOpacity();
+/*        contents.get(i).resetOpacity();*/
         contents.remove(i);
       }
     }
@@ -160,7 +160,10 @@ public class Board extends AbstractSprite
       for (int x = 0; x < contents.size(); x++)
       {
         if (contents.get(x).getGain() == false)
+        {
           stage.remove(contents.get(x));
+          contents.remove(x);
+        }
       }
     }
 
@@ -181,7 +184,7 @@ public class Board extends AbstractSprite
     
     contents.trimToSize();
 
-    if (contents.size() > 15)
+    if (contents.size() > 5)
     {
       gameLost = true;
     }

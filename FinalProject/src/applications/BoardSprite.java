@@ -279,7 +279,7 @@ public class BoardSprite extends RuleBasedSprite
   {
     opacity -= opacityDecrease;
 
-    if (opacity < 0)
+    if (opacity <= 0)
       opacity = 0;
 
     Composite comp = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity);

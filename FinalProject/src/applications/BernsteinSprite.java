@@ -77,8 +77,6 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
     {
       BufferedInputStream bis = new BufferedInputStream(finder.findInputStream("erase.wav"));
       AudioInputStream ais = AudioSystem.getAudioInputStream(bis);
-      
-      System.out.print("HERE");
 
       eraseClip = AudioSystem.getClip();
       eraseClip.open(ais);
