@@ -11,9 +11,10 @@ import visual.statik.sampled.Content;
 import visual.statik.sampled.ImageFactory;
 
 /**
+ * A board.
  * 
  * @author Behan Alavi, Jonathon Kent, Cayleigh Verhaalen
- * @version 12/2/2018
+ * @version 12/3/2018
  */
 public class Board extends AbstractSprite
 {
@@ -31,6 +32,7 @@ public class Board extends AbstractSprite
   private ImageFactory factory = new ImageFactory(finder);
 
   /**
+   * Contructs a new board that will contain board sprites and a Bernstein sprite.
    * 
    * @param stage
    */
@@ -143,7 +145,6 @@ public class Board extends AbstractSprite
       {
         stage.remove(contents.get(i));
         totalPoints += contents.get(i).getPoints();
-/*        contents.get(i).resetOpacity();*/
         contents.remove(i);
       }
     }
@@ -181,7 +182,7 @@ public class Board extends AbstractSprite
     {
       gameWon = true;
     }
-    
+
     contents.trimToSize();
 
     if (contents.size() > 15)

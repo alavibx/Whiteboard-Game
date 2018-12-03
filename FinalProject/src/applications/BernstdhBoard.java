@@ -21,7 +21,7 @@ import visual.statik.sampled.ContentFactory;
  * A game.
  * 
  * @author Behan Alavi, Jonathon Kent, Cayleigh Verhaalen
- * @version 12/2/2018
+ * @version 12/3/2018
  */
 public class BernstdhBoard extends JApplication
     implements KeyListener, MetronomeListener, MouseListener
@@ -247,6 +247,27 @@ public class BernstdhBoard extends JApplication
   }
 
   /**
+   * Person has released key.
+   * 
+   * @param arg0
+   */
+  public void keyReleased(KeyEvent ke)
+  {
+    int keyCode;
+    keyCode = ke.getKeyCode();
+
+    if ((keyCode == KeyEvent.VK_ENTER || keyCode == KeyEvent.VK_SPACE || keyCode == KeyEvent.VK_ALT
+        || keyCode == KeyEvent.VK_CONTROL || keyCode == KeyEvent.VK_BACK_SPACE
+        || keyCode == KeyEvent.VK_ENTER))
+    {
+      if (keyCode != KeyEvent.VK_ENTER)
+      {
+        releaseHandler();
+      }
+    }
+  }
+
+  /**
    * Responds to events when the mouse is pressed over a button. Different events occur under
    * different conditions.
    * 
@@ -296,6 +317,92 @@ public class BernstdhBoard extends JApplication
       aboutHandler();
     }
   }
+
+  /**
+   * Responds to events when the mouse is released. Different events occur under different
+   * conditions.
+   * 
+   * @param me
+   *          A mouse event
+   */
+  @Override
+  public void mouseReleased(MouseEvent e)
+  {
+    releaseHandler();
+  }
+
+  /**
+   * Handles every tick of the metronome.
+   */
+  @Override
+  public void handleTick(int arg0)
+  {
+    if (board != null)
+    {
+      score.setText("SCORE: " + board.getTotalPoints());
+      time.setText("TIME: " + board.gameTime() + " seconds");
+
+      if (board.gameWon())
+      {
+        if (currentBestTime == 0)
+        {
+          currentBestTime = board.gameTime();
+        }
+
+        if (currentBestScore < board.getTotalPoints())
+        {
+          currentBestScore = board.getTotalPoints();
+
+          if (currentBestTime < board.gameTime())
+          {
+            currentBestTime = board.gameTime();
+          }
+        }
+
+        stage.stop();
+
+        int dialogRes = JOptionPane.showConfirmDialog(contentPane,
+            "You won!\n Would you like to play again?");
+
+        if (dialogRes == JOptionPane.YES_OPTION)
+        {
+          endGame();
+          return;
+        }
+        else if (dialogRes == JOptionPane.NO_OPTION)
+        {
+          System.exit(0);
+        }
+      }
+
+      if (board.gameLost())
+      {
+        if (currentBestScore < board.getTotalPoints())
+        {
+          currentBestScore = board.getTotalPoints();
+        }
+
+        stage.stop();
+
+        int dialogRes = JOptionPane.showConfirmDialog(contentPane,
+            "You lost!\n Would you like to play again?");
+
+        if (dialogRes == JOptionPane.YES_OPTION)
+        {
+          endGame();
+          return;
+        }
+        else if (dialogRes == JOptionPane.NO_OPTION)
+        {
+          System.exit(0);
+        }
+      }
+    }
+  }
+
+  /******************************************************************************************/
+  /************************************* HELPER METHODS *************************************/
+  /******************************************************************************************/
 
   /**
    * Ends the current game and returns to the main menu.
@@ -508,79 +615,6 @@ public class BernstdhBoard extends JApplication
   }
 
   /**
-   * 
-   */
-  @Override
-  public void handleTick(int arg0)
-  {
-    if (board != null)
-    {
-      score.setText("SCORE: " + board.getTotalPoints());
-      time.setText("TIME: " + board.gameTime() + " seconds");
-
-      if (board.gameWon())
-      {
-        if (currentBestTime == 0)
-        {
-          currentBestTime = board.gameTime();
-        }
-
-        if (currentBestScore < board.getTotalPoints())
-        {
-          currentBestScore = board.getTotalPoints();
-
-          if (currentBestTime < board.gameTime())
-          {
-            currentBestTime = board.gameTime();
-          }
-        }
-
-        stage.stop();
-
-        int dialogRes = JOptionPane.showConfirmDialog(contentPane,
-            "You won!\n Would you like to play again?");
-
-        if (dialogRes == JOptionPane.YES_OPTION)
-        {
-          endGame();
-          return;
-        }
-        else if (dialogRes == JOptionPane.NO_OPTION)
-        {
-          System.exit(0);
-        }
-      }
-
-      if (board.gameLost())
-      {
-        if (currentBestScore < board.getTotalPoints())
-        {
-          currentBestScore = board.getTotalPoints();
-        }
-
-        stage.stop();
-
-        int dialogRes = JOptionPane.showConfirmDialog(contentPane,
-            "You lost!\n Would you like to play again?");
-
-        if (dialogRes == JOptionPane.YES_OPTION)
-        {
-          endGame();
-          return;
-        }
-        else if (dialogRes == JOptionPane.NO_OPTION)
-        {
-          System.exit(0);
-        }
-      }
-    }
-  }
-
-  /******************************************************************************************/
-  /************************************* HELPER METHODS *************************************/
-  /******************************************************************************************/
-
-  /**
    * Helper method for ABOUT display.
    */
   public void aboutHandler()
@@ -713,83 +747,6 @@ public class BernstdhBoard extends JApplication
       pauseGame();
     else if (gameStarted && isPaused)
       resumeGame();
-  }
-
-  /**
-   * Responds to events when the mouse is released. Different events occur under different
-   * conditions.
-   * 
-   * @param me
-   *          A mouse event
-   */
-  @Override
-  public void mouseReleased(MouseEvent e)
-  {
-    // Handle PLAY when RELEASED
-    if (playPressed && !pausePressed)
-    {
-      stage.add(playButton[0]);
-      stage.add(playButton[1]);
-      stage.remove(playButton[2]);
-      stage.remove(playButton[3]);
-
-      playPressed = false;
-      pausePressed = false;
-    }
-    else if (!playPressed && !pausePressed)
-    {
-      stage.add(playButton[0]);
-      stage.add(playButton[1]);
-      stage.add(playButton[2]);
-      stage.add(playButton[3]);
-
-      playPressed = false;
-      pausePressed = true;
-    }
-
-    // Handle HELP MENU when RELEASED
-    if (helpPressed && !returnHPressed)
-    {
-      stage.add(helpButton[0]);
-      stage.add(helpButton[1]);
-      stage.remove(helpButton[2]);
-      stage.remove(helpButton[3]);
-
-      helpPressed = false;
-      returnHPressed = false;
-    }
-    else if (!helpPressed && !returnHPressed)
-    {
-      stage.add(helpButton[0]);
-      stage.add(helpButton[1]);
-      stage.add(helpButton[2]);
-      stage.add(helpButton[3]);
-
-      helpPressed = false;
-      returnHPressed = true;
-    }
-
-    // Handle ABOUT MENU when RELEASED
-    if (aboutPressed && !returnAPressed)
-    {
-      stage.add(aboutButton[0]);
-      stage.add(aboutButton[1]);
-      stage.remove(aboutButton[2]);
-      stage.remove(aboutButton[3]);
-
-      aboutPressed = false;
-      returnAPressed = false;
-    }
-    else if (!aboutPressed && !returnAPressed)
-    {
-      stage.add(aboutButton[0]);
-      stage.add(aboutButton[1]);
-      stage.add(aboutButton[2]);
-      stage.add(aboutButton[3]);
-
-      aboutPressed = false;
-      returnAPressed = true;
-    }
   }
 
   /**
@@ -946,87 +903,74 @@ public class BernstdhBoard extends JApplication
   }
 
   /**
-   * Person has released key.
-   * 
-   * @param arg0
+   * Helper method for handling when mouse and keys are released.
    */
-  public void keyReleased(KeyEvent ke)
+  public void releaseHandler()
   {
-    int keyCode;
-    keyCode = ke.getKeyCode();
-
-    if ((keyCode == KeyEvent.VK_ENTER || keyCode == KeyEvent.VK_SPACE || keyCode == KeyEvent.VK_ALT
-        || keyCode == KeyEvent.VK_CONTROL || keyCode == KeyEvent.VK_BACK_SPACE
-        || keyCode == KeyEvent.VK_ENTER))
+    // Handle PLAY when RELEASED
+    if (playPressed && !pausePressed)
     {
-      if (keyCode != KeyEvent.VK_ENTER)
-      {
-        // Handle PLAY when RELEASED
-        if (playPressed && !pausePressed)
-        {
-          stage.add(playButton[0]);
-          stage.add(playButton[1]);
-          stage.remove(playButton[2]);
-          stage.remove(playButton[3]);
+      stage.add(playButton[0]);
+      stage.add(playButton[1]);
+      stage.remove(playButton[2]);
+      stage.remove(playButton[3]);
 
-          playPressed = false;
-          pausePressed = false;
-        }
-        else if (!playPressed && !pausePressed)
-        {
-          stage.add(playButton[0]);
-          stage.add(playButton[1]);
-          stage.add(playButton[2]);
-          stage.add(playButton[3]);
+      playPressed = false;
+      pausePressed = false;
+    }
+    else if (!playPressed && !pausePressed)
+    {
+      stage.add(playButton[0]);
+      stage.add(playButton[1]);
+      stage.add(playButton[2]);
+      stage.add(playButton[3]);
 
-          playPressed = false;
-          pausePressed = true;
-        }
+      playPressed = false;
+      pausePressed = true;
+    }
 
-        // Handle HELP MENU when RELEASED
-        if (helpPressed && !returnHPressed)
-        {
-          stage.add(helpButton[0]);
-          stage.add(helpButton[1]);
-          stage.remove(helpButton[2]);
-          stage.remove(helpButton[3]);
+    // Handle HELP MENU when RELEASED
+    if (helpPressed && !returnHPressed)
+    {
+      stage.add(helpButton[0]);
+      stage.add(helpButton[1]);
+      stage.remove(helpButton[2]);
+      stage.remove(helpButton[3]);
 
-          helpPressed = false;
-          returnHPressed = false;
-        }
-        else if (!helpPressed && !returnHPressed)
-        {
-          stage.add(helpButton[0]);
-          stage.add(helpButton[1]);
-          stage.add(helpButton[2]);
-          stage.add(helpButton[3]);
+      helpPressed = false;
+      returnHPressed = false;
+    }
+    else if (!helpPressed && !returnHPressed)
+    {
+      stage.add(helpButton[0]);
+      stage.add(helpButton[1]);
+      stage.add(helpButton[2]);
+      stage.add(helpButton[3]);
 
-          helpPressed = false;
-          returnHPressed = true;
-        }
+      helpPressed = false;
+      returnHPressed = true;
+    }
 
-        // Handle ABOUT MENU when RELEASED
-        if (aboutPressed && !returnAPressed)
-        {
-          stage.add(aboutButton[0]);
-          stage.add(aboutButton[1]);
-          stage.remove(aboutButton[2]);
-          stage.remove(aboutButton[3]);
+    // Handle ABOUT MENU when RELEASED
+    if (aboutPressed && !returnAPressed)
+    {
+      stage.add(aboutButton[0]);
+      stage.add(aboutButton[1]);
+      stage.remove(aboutButton[2]);
+      stage.remove(aboutButton[3]);
 
-          aboutPressed = false;
-          returnAPressed = false;
-        }
-        else if (!aboutPressed && !returnAPressed)
-        {
-          stage.add(aboutButton[0]);
-          stage.add(aboutButton[1]);
-          stage.add(aboutButton[2]);
-          stage.add(aboutButton[3]);
+      aboutPressed = false;
+      returnAPressed = false;
+    }
+    else if (!aboutPressed && !returnAPressed)
+    {
+      stage.add(aboutButton[0]);
+      stage.add(aboutButton[1]);
+      stage.add(aboutButton[2]);
+      stage.add(aboutButton[3]);
 
-          aboutPressed = false;
-          returnAPressed = true;
-        }
-      }
+      aboutPressed = false;
+      returnAPressed = true;
     }
   }
 
