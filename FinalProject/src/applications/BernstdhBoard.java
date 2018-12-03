@@ -28,7 +28,7 @@ public class BernstdhBoard extends JApplication
 {
   public static final int BKGD_WIDTH = 1345;
   public static final int BKGD_HEIGHT = 880;
-  
+
   public static boolean isMuted;
 
   private Content bkgd, main, help, about;
@@ -451,6 +451,8 @@ public class BernstdhBoard extends JApplication
     returnHPressed = false;
     aboutPressed = false;
     returnAPressed = true;
+    
+    gameVolume.setValue(-10f);
 
     if (gameStarted)
       isPaused = true;
@@ -479,6 +481,8 @@ public class BernstdhBoard extends JApplication
     returnHPressed = true;
     aboutPressed = true;
     returnAPressed = false;
+    
+    gameVolume.setValue(-10f);
 
     if (gameStarted)
       isPaused = true;
@@ -491,8 +495,7 @@ public class BernstdhBoard extends JApplication
    */
   public void pauseGame()
   {
-    FloatControl volume = (FloatControl) gameClip.getControl(FloatControl.Type.MASTER_GAIN);
-    volume.setValue(-80f);
+    gameVolume.setValue(-80f);
 
     stage.getMetronome().stop();
 
@@ -515,7 +518,6 @@ public class BernstdhBoard extends JApplication
    */
   public void resumeGame()
   {
-
     gameVolume.setValue(-10f);
 
     board.show();
@@ -558,7 +560,7 @@ public class BernstdhBoard extends JApplication
       stage.remove(help);
       helpDisplayed = false;
     }
-    
+
     initializeGameMusic();
 
     gameStarted = true;
