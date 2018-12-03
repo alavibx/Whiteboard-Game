@@ -28,6 +28,8 @@ public class BoardSprite extends RuleBasedSprite
     this.content = content;
     this.gain = gain;
 
+    this.setScale(Math.random() + 0.25);
+    
     opacity = 1f;
     opacityDecrease = (float) Math.random();
     points = 0;
@@ -37,7 +39,7 @@ public class BoardSprite extends RuleBasedSprite
     height = (int) content.getBounds2D(false).getHeight();
 
     // Generate the x position of the content randomly across the width of the whiteboard
-    x = (int) (Math.random() * ((BernstdhBoard.BKGD_WIDTH - 75) - width) + 25);
+    x = (int) (Math.random() * ((BernstdhBoard.BKGD_WIDTH - 75) - width) + 50);
 
     if(gain)
     {
@@ -49,7 +51,7 @@ public class BoardSprite extends RuleBasedSprite
       }
       else
       {
-        y = 175;
+        y = 180;
         points += 100;
       }
 

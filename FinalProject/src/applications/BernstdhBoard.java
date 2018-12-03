@@ -628,6 +628,7 @@ public class BernstdhBoard extends JApplication
         if (dialogRes == JOptionPane.YES_OPTION)
         {
           endGame();
+          return;
         }
         else if (dialogRes == JOptionPane.NO_OPTION)
         {
@@ -650,6 +651,7 @@ public class BernstdhBoard extends JApplication
         if (dialogRes == JOptionPane.YES_OPTION)
         {
           endGame();
+          return;
         }
         else if (dialogRes == JOptionPane.NO_OPTION)
         {

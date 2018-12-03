@@ -277,7 +277,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
     else
       nearRightEdge = false;
 
-    if (xBernstein > 0)
+    if (xBernstein > -25)
       nearLeftEdge = false;
     else
       nearLeftEdge = true;

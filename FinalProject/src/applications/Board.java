@@ -177,7 +177,7 @@ public class Board extends AbstractSprite
         speed = 300;
     }
 
-    if (totalPoints >= 50000)
+    if (totalPoints >= 15000)
     {
       gameWon = true;
     }
