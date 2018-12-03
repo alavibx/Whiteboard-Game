@@ -950,72 +950,83 @@ public class BernstdhBoard extends JApplication
    * 
    * @param arg0
    */
-  public void keyReleased(KeyEvent arg0)
+  public void keyReleased(KeyEvent ke)
   {
-    // Handle PLAY when RELEASED
-    if (playPressed && !pausePressed)
+    int keyCode;
+    keyCode = ke.getKeyCode();
+
+    if ((keyCode == KeyEvent.VK_ENTER || keyCode == KeyEvent.VK_SPACE || keyCode == KeyEvent.VK_ALT
+        || keyCode == KeyEvent.VK_CONTROL || keyCode == KeyEvent.VK_BACK_SPACE
+        || keyCode == KeyEvent.VK_ENTER))
     {
-      stage.add(playButton[0]);
-      stage.add(playButton[1]);
-      stage.remove(playButton[2]);
-      stage.remove(playButton[3]);
+      if (keyCode != KeyEvent.VK_ENTER)
+      {
+        // Handle PLAY when RELEASED
+        if (playPressed && !pausePressed)
+        {
+          stage.add(playButton[0]);
+          stage.add(playButton[1]);
+          stage.remove(playButton[2]);
+          stage.remove(playButton[3]);
 
-      playPressed = false;
-      pausePressed = false;
-    }
-    else if (!playPressed && !pausePressed)
-    {
-      stage.add(playButton[0]);
-      stage.add(playButton[1]);
-      stage.add(playButton[2]);
-      stage.add(playButton[3]);
+          playPressed = false;
+          pausePressed = false;
+        }
+        else if (!playPressed && !pausePressed)
+        {
+          stage.add(playButton[0]);
+          stage.add(playButton[1]);
+          stage.add(playButton[2]);
+          stage.add(playButton[3]);
 
-      playPressed = false;
-      pausePressed = true;
-    }
+          playPressed = false;
+          pausePressed = true;
+        }
 
-    // Handle HELP MENU when RELEASED
-    if (helpPressed && !returnHPressed)
-    {
-      stage.add(helpButton[0]);
-      stage.add(helpButton[1]);
-      stage.remove(helpButton[2]);
-      stage.remove(helpButton[3]);
+        // Handle HELP MENU when RELEASED
+        if (helpPressed && !returnHPressed)
+        {
+          stage.add(helpButton[0]);
+          stage.add(helpButton[1]);
+          stage.remove(helpButton[2]);
+          stage.remove(helpButton[3]);
 
-      helpPressed = false;
-      returnHPressed = false;
-    }
-    else if (!helpPressed && !returnHPressed)
-    {
-      stage.add(helpButton[0]);
-      stage.add(helpButton[1]);
-      stage.add(helpButton[2]);
-      stage.add(helpButton[3]);
+          helpPressed = false;
+          returnHPressed = false;
+        }
+        else if (!helpPressed && !returnHPressed)
+        {
+          stage.add(helpButton[0]);
+          stage.add(helpButton[1]);
+          stage.add(helpButton[2]);
+          stage.add(helpButton[3]);
 
-      helpPressed = false;
-      returnHPressed = true;
-    }
+          helpPressed = false;
+          returnHPressed = true;
+        }
 
-    // Handle ABOUT MENU when RELEASED
-    if (aboutPressed && !returnAPressed)
-    {
-      stage.add(aboutButton[0]);
-      stage.add(aboutButton[1]);
-      stage.remove(aboutButton[2]);
-      stage.remove(aboutButton[3]);
+        // Handle ABOUT MENU when RELEASED
+        if (aboutPressed && !returnAPressed)
+        {
+          stage.add(aboutButton[0]);
+          stage.add(aboutButton[1]);
+          stage.remove(aboutButton[2]);
+          stage.remove(aboutButton[3]);
 
-      aboutPressed = false;
-      returnAPressed = false;
-    }
-    else if (!aboutPressed && !returnAPressed)
-    {
-      stage.add(aboutButton[0]);
-      stage.add(aboutButton[1]);
-      stage.add(aboutButton[2]);
-      stage.add(aboutButton[3]);
+          aboutPressed = false;
+          returnAPressed = false;
+        }
+        else if (!aboutPressed && !returnAPressed)
+        {
+          stage.add(aboutButton[0]);
+          stage.add(aboutButton[1]);
+          stage.add(aboutButton[2]);
+          stage.add(aboutButton[3]);
 
-      aboutPressed = false;
-      returnAPressed = true;
+          aboutPressed = false;
+          returnAPressed = true;
+        }
+      }
     }
   }
 
