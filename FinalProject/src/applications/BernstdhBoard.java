@@ -451,8 +451,9 @@ public class BernstdhBoard extends JApplication
     returnHPressed = false;
     aboutPressed = false;
     returnAPressed = true;
-    
-    gameVolume.setValue(-10f);
+
+    if (!isMuted)
+      gameVolume.setValue(-10f);
 
     if (gameStarted)
       isPaused = true;
@@ -481,8 +482,9 @@ public class BernstdhBoard extends JApplication
     returnHPressed = true;
     aboutPressed = true;
     returnAPressed = false;
-    
-    gameVolume.setValue(-10f);
+
+    if (!isMuted)
+      gameVolume.setValue(-10f);
 
     if (gameStarted)
       isPaused = true;
@@ -518,7 +520,10 @@ public class BernstdhBoard extends JApplication
    */
   public void resumeGame()
   {
-    gameVolume.setValue(-10f);
+    if (isMuted)
+      gameVolume.setValue(-80f);
+    else
+      gameVolume.setValue(-10f);
 
     board.show();
 
