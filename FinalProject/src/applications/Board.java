@@ -184,7 +184,7 @@ public class Board extends AbstractSprite
     
     contents.trimToSize();
 
-    if (contents.size() > 5)
+    if (contents.size() > 15)
     {
       gameLost = true;
     }

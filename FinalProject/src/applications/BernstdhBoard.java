@@ -28,6 +28,8 @@ public class BernstdhBoard extends JApplication
 {
   public static final int BKGD_WIDTH = 1345;
   public static final int BKGD_HEIGHT = 880;
+  
+  public static boolean isMuted;
 
   private Content bkgd, main, help, about;
   private Content[] helpButton, playButton, aboutButton;
@@ -35,7 +37,7 @@ public class BernstdhBoard extends JApplication
   private boolean helpPressed, playPressed, pausePressed, returnHPressed, returnAPressed,
       aboutPressed;
   private JPanel contentPane;
-  private boolean isPaused, gameStarted, replay, isMuted;
+  private boolean isPaused, gameStarted;
   private Board board;
   private JFrame mainWindow;
   private ResourceFinder finder;
@@ -167,7 +169,6 @@ public class BernstdhBoard extends JApplication
 
     isPaused = false;
     gameStarted = false;
-    replay = false;
     isMuted = false;
 
     helpDisplayed = false;

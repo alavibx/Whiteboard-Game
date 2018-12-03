@@ -72,7 +72,7 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
 
     setLocation(xBernstein, yBernstein);
     setVisible(true);
-    
+
     try
     {
       BufferedInputStream bis = new BufferedInputStream(finder.findInputStream("erase.wav"));
@@ -174,8 +174,12 @@ public class BernsteinSprite extends AbstractSprite implements KeyListener
    */
   public void handleFire()
   {
-    eraseClip.start();
-    eraseClip.setMicrosecondPosition(0);
+    if (!BernstdhBoard.isMuted)
+    {
+      eraseClip.start();
+      eraseClip.setMicrosecondPosition(0);
+    }
+    
     direction = BACK;
     position = ERASE1;
     position = ERASE2;
